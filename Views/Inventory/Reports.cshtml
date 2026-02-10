@@ -1,16 +1,23 @@
 @{
     ViewData["Title"] = "Inventory Reports";
 }
-<h2>Inventory Reports</h2>
-<p class="text-muted">Choose a report to view stock by warehouse, item, or model/type.</p>
-<div class="list-group">
-    <a asp-action="ReportByWarehouse" class="list-group-item list-group-item-action">
-        <strong>By Warehouse</strong> — Stock grouped by location (warehouse/zone)
-    </a>
-    <a asp-action="ReportByItem" class="list-group-item list-group-item-action">
-        <strong>By Item</strong> — Stock grouped by product (SKU), with locations
-    </a>
-    <a asp-action="ReportByModel" class="list-group-item list-group-item-action">
-        <strong>By Model / Type</strong> — Stock grouped by item model or type
-    </a>
+
+<div class="animate-fade-in">
+    <h1 class="text-2xl font-bold text-slate-800 mb-2">Inventory Reports</h1>
+    <p class="text-slate-500 mb-8">Choose a report to view stock by warehouse, item, or model/type.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a asp-action="ReportByWarehouse" class="block p-6 rounded-2xl bg-white border border-slate-100 shadow-soft hover-lift hover:border-blue-100 hover:shadow-card transition-all duration-200 group">
+            <span class="text-lg font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">By Warehouse</span>
+            <p class="text-slate-500 text-sm mt-1">Stock grouped by location (warehouse/zone)</p>
+        </a>
+        <a asp-action="ReportByItem" class="block p-6 rounded-2xl bg-white border border-slate-100 shadow-soft hover-lift hover:border-blue-100 hover:shadow-card transition-all duration-200 group">
+            <span class="text-lg font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">By Item</span>
+            <p class="text-slate-500 text-sm mt-1">Stock grouped by product (SKU), with locations</p>
+        </a>
+        <a asp-action="ReportByModel" class="block p-6 rounded-2xl bg-white border border-slate-100 shadow-soft hover-lift hover:border-blue-100 hover:shadow-card transition-all duration-200 group">
+            <span class="text-lg font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">By Model / Type</span>
+            <p class="text-slate-500 text-sm mt-1">Stock grouped by item model or type</p>
+        </a>
+    </div>
 </div>

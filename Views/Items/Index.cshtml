@@ -4,38 +4,46 @@
     var q = (string)(ViewBag.Query ?? "");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Items</h2>
-    <a class="btn btn-primary" asp-action="QuickCreate">Quick add</a>
-</div>
-
-<form method="get" class="mb-3">
-    <div class="input-group">
-        <input class="form-control" name="q" placeholder="Search by SKU or name" value="@q" />
-        <button class="btn btn-outline-secondary">Search</button>
+<div class="animate-fade-in">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 class="text-2xl font-bold text-slate-800">Items</h1>
+        <a asp-action="QuickCreate" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 w-fit">Quick add</a>
     </div>
-</form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>SKU</th>
-            <th>Name</th>
-            <th>Family</th>
-            <th>Model/Type</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var i in Model)
-    {
-        <tr>
-            <td>@i.Sku</td>
-            <td>@i.Name</td>
-            <td>@i.Family</td>
-            <td>@i.ModelOrType</td>
-            <td><a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@i.Id">View</a></td>
-        </tr>
-    }
-    </tbody>
-</table>
+    <form method="get" class="mb-6">
+        <div class="flex gap-2 flex-wrap">
+            <input name="q" value="@q" placeholder="Search by SKU or name" class="flex-1 min-w-[200px] px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200" />
+            <button type="submit" class="px-5 py-3 rounded-xl bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 transition-all duration-200">Search</button>
+        </div>
+    </form>
+
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50/80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Family</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Model/Type</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var i in Model)
+                    {
+                        <tr class="table-row-hover transition-colors duration-150">
+                            <td class="px-6 py-4 font-medium text-slate-800">@i.Sku</td>
+                            <td class="px-6 py-4 text-slate-600">@i.Name</td>
+                            <td class="px-6 py-4 text-slate-600">@i.Family</td>
+                            <td class="px-6 py-4 text-slate-600">@i.ModelOrType</td>
+                            <td class="px-6 py-4 text-right">
+                                <a asp-action="Details" asp-route-id="@i.Id" class="inline-flex items-center px-4 py-2 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 transition-all duration-200">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

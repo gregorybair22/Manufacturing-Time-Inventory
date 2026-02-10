@@ -3,86 +3,127 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ManufacturingTimeTracking</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - Manufacturing Time Tracking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            animation: {
+              'fade-in': 'fadeIn 0.4s ease-out forwards',
+              'slide-up': 'slideUp 0.45s ease-out forwards',
+            },
+            keyframes: {
+              fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+              slideUp: { '0%': { opacity: '0', transform: 'translateY(12px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            },
+            boxShadow: {
+              'soft': '0 2px 15px -3px rgba(0,0,0,0.07), 0 10px 20px -2px rgba(0,0,0,0.04)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',
+              'card-hover': '0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)',
+            },
+          },
+        },
+      }
+    </script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ManufacturingTimeTracking.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">ManufacturingTimeTracking</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Operator") || User.IsInRole("Supervisor"))
-                        {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Catalog/Models/Index">Models</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Templates/Index">Templates</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Resources
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
-                                <li><a class="dropdown-item" asp-page="/Tools/Index">Tools</a></li>
-                                <li><a class="dropdown-item" asp-page="/Materials/Index">Materials</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Orders/Index">Orders</a>
-                        </li>
-                        }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
-                        {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Inventory
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
-                                <li><a class="dropdown-item" asp-controller="Items" asp-action="Index">Items</a></li>
-                                <li><a class="dropdown-item" asp-controller="Locations" asp-action="Index">Locations</a></li>
-                                <li><a class="dropdown-item" asp-controller="Inventory" asp-action="Stock">Stock</a></li>
-                                <li><a class="dropdown-item" asp-controller="Inventory" asp-action="Movements">Movements</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" asp-controller="Inventory" asp-action="Reports">Reports</a></li>
-                                <li><a class="dropdown-item" asp-controller="Operations" asp-action="Index">Operations</a></li>
-                            </ul>
-                        </li>
-                        }
-                    </ul>
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased flex flex-col">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-soft">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a asp-area="" asp-page="/Index" class="text-xl font-bold text-slate-800 hover:text-blue-600 transition-colors duration-200 flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm font-extrabold">M</span>
+                        Manufacturing Time
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center gap-1">
+                    <a asp-area="" asp-page="/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Home</a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Operator") || User.IsInRole("Supervisor"))
+                    {
+                        <a asp-area="" asp-page="/Catalog/Models/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Models</a>
+                        <a asp-area="" asp-page="/Templates/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Templates</a>
+                        <div class="relative group">
+                            <button type="button" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium inline-flex items-center gap-1">
+                                Resources <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="absolute left-0 mt-1 w-48 py-2 bg-white rounded-xl shadow-card border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top">
+                                <a asp-page="/Tools/Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Tools</a>
+                                <a asp-page="/Materials/Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Materials</a>
+                            </div>
+                        </div>
+                        <a asp-area="" asp-page="/Orders/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Orders</a>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
+                    {
+                        <div class="relative group">
+                            <button type="button" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium inline-flex items-center gap-1">
+                                Inventory <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="absolute left-0 mt-1 w-52 py-2 bg-white rounded-xl shadow-card border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top">
+                                <a asp-controller="Items" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Items</a>
+                                <a asp-controller="Locations" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Locations</a>
+                                <a asp-controller="Inventory" asp-action="Stock" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Stock</a>
+                                <a asp-controller="Inventory" asp-action="Movements" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Movements</a>
+                                <div class="border-t border-slate-100 my-2"></div>
+                                <a asp-controller="Inventory" asp-action="Reports" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Reports</a>
+                                <a asp-controller="Operations" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Operations</a>
+                            </div>
+                        </div>
+                    }
+                    <partial name="_LoginPartial" />
+                </div>
+                <div class="flex items-center md:hidden">
+                    <button type="button" id="mobile-menu-btn" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100" aria-label="Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-slate-100 pt-4 animate-fade-in">
+                <a asp-page="/Index" class="block py-2 text-slate-600">Home</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Operator") || User.IsInRole("Supervisor"))
+                {
+                    <a asp-page="/Catalog/Models/Index" class="block py-2 text-slate-600">Models</a>
+                    <a asp-page="/Templates/Index" class="block py-2 text-slate-600">Templates</a>
+                    <a asp-page="/Tools/Index" class="block py-2 pl-4 text-slate-500 text-sm">Tools</a>
+                    <a asp-page="/Materials/Index" class="block py-2 pl-4 text-slate-500 text-sm">Materials</a>
+                    <a asp-page="/Orders/Index" class="block py-2 text-slate-600">Orders</a>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
+                {
+                    <a asp-controller="Items" asp-action="Index" class="block py-2 text-slate-600">Items</a>
+                    <a asp-controller="Locations" asp-action="Index" class="block py-2 text-slate-600">Locations</a>
+                    <a asp-controller="Inventory" asp-action="Stock" class="block py-2 text-slate-600">Stock</a>
+                    <a asp-controller="Inventory" asp-action="Reports" class="block py-2 text-slate-600">Reports</a>
+                }
+                <div class="pt-2 border-t border-slate-100 mt-2">
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - ManufacturingTimeTracking - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @RenderBody()
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white mt-auto py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-sm">
+            &copy; 2026 Manufacturing Time Tracking — <a asp-area="" asp-page="/Privacy" class="text-blue-600 hover:text-blue-700 hover:underline transition-colors">Privacy</a>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script>
+      document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
+        var menu = document.getElementById('mobile-menu');
+        if (menu) menu.classList.toggle('hidden');
+      });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
