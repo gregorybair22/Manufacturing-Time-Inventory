@@ -4,4 +4,5 @@
 # Example: myapp.ngrok-free.app
 # Get your domain from: https://dashboard.ngrok.com/cloud-edge/domains
 
-DOMAIN=
+DOMAIN=sorrowfully-nonintroversive-melodi.ngrok-free.dev
+

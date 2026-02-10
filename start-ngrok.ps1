@@ -64,6 +64,13 @@ Write-Host "Starting ngrok tunnel on port 5173 (HTTP)..." -ForegroundColor Yello
 if ($customDomain) {
     Write-Host "Using custom domain: $customDomain" -ForegroundColor Cyan
     Write-Host "The public URL will be: https://$customDomain" -ForegroundColor Green
+    # Stop any existing ngrok so this domain is free (fixes ERR_NGROK_334 "endpoint already online")
+    $existing = Get-Process -Name ngrok -ErrorAction SilentlyContinue
+    if ($existing) {
+        Write-Host "Stopping existing ngrok tunnel so this domain can be used..." -ForegroundColor Yellow
+        $existing | Stop-Process -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 2
+    }
 } else {
     Write-Host "Using random domain (free account)" -ForegroundColor Yellow
     Write-Host "The public URL will be displayed below. Share this URL with the other laptop." -ForegroundColor Cyan
@@ -75,6 +82,8 @@ Write-Host "  2. Or open this in your browser to see the public URL: http://127.
 Write-Host ""
 Write-Host "To change domain, edit: ngrok-config.txt" -ForegroundColor Gray
 Write-Host "Press Ctrl+C to stop the tunnel" -ForegroundColor Yellow
+Write-Host "If you see ERR_NGROK_3200 (endpoint offline): keep this window OPEN and use the URL shown below (free URLs change each run)." -ForegroundColor Gray
+Write-Host "If you see ERR_NGROK_334 (already online): the script will stop existing ngrok first when using a custom domain." -ForegroundColor Gray
 Write-Host ""
 
 # Start ngrok with or without custom domain

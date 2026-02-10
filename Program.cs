@@ -52,12 +52,14 @@ builder.Services.AddScoped<ManufacturingTimeTracking.Services.OpenAIVisionServic
 builder.Services.AddHttpClient();
 
 // Add forwarded headers support for reverse proxies (ngrok, Caddy gateway).
+// Required so redirects and links use the public URL (e.g. https://xxx.ngrok-free.dev) not localhost.
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
     options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
     options.KnownProxies.Add(IPAddress.Loopback);
+    options.KnownProxies.Add(IPAddress.IPv6Loopback);
     options.ForwardLimit = 1;
 });
 
@@ -73,6 +75,10 @@ builder.WebHost.ConfigureKestrel(options =>
 
 var app = builder.Build();
 
+// Forwarded headers MUST run first so the app sees the real host/scheme (e.g. ngrok domain over HTTPS).
+// Otherwise you get 307 redirects to localhost and "can't access with domain".
+app.UseForwardedHeaders();
+
 // When behind LFSInventario gateway, app is served at /manufacturing (path base from config)
 var pathBase = builder.Configuration["PathBase"] ?? builder.Configuration["ASPNETCORE_PATHBASE"];
 if (!string.IsNullOrWhiteSpace(pathBase))
@@ -82,9 +88,6 @@ if (!string.IsNullOrWhiteSpace(pathBase))
         app.UsePathBase("/" + pathBase.TrimStart('/'));
 }
 
-// Use forwarded headers (important for ngrok and reverse proxies)
-app.UseForwardedHeaders();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -93,7 +96,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Skip HTTPS redirect when behind gateway (PathBase set); proxy already serves HTTPS.
+// HTTPS redirect: skip when behind a proxy (PathBase set or we'll rely on forwarded proto from ngrok).
 if (string.IsNullOrWhiteSpace(pathBase))
     app.UseHttpsRedirection();
 app.UseStaticFiles();
