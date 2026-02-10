@@ -69,6 +69,10 @@ if ($customDomain) {
     Write-Host "The public URL will be displayed below. Share this URL with the other laptop." -ForegroundColor Cyan
 }
 Write-Host ""
+Write-Host "WHERE TO FIND YOUR ADDRESS:" -ForegroundColor Green
+Write-Host "  1. Look in the ngrok output below for the line: Forwarding  https://xxxx.ngrok-free.app -> ..." -ForegroundColor White
+Write-Host "  2. Or open this in your browser to see the public URL: http://127.0.0.1:4040" -ForegroundColor Cyan
+Write-Host ""
 Write-Host "To change domain, edit: ngrok-config.txt" -ForegroundColor Gray
 Write-Host "Press Ctrl+C to stop the tunnel" -ForegroundColor Yellow
 Write-Host ""
