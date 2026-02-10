@@ -17,265 +17,265 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ManufacturingTimeTracking
 build_property.RootNamespace = ManufacturingTimeTracking
-build_property.ProjectDir = D:\Manufacturing-Time\
+build_property.ProjectDir = D:\Manufacturing-Time-Inventory\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\Manufacturing-Time
+build_property.MSBuildProjectDirectory = D:\Manufacturing-Time-Inventory
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[D:/Manufacturing-Time/Pages/Account/Login.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Account/Logout.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Account/Logout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxMb2dvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Account/Register.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Catalog/Models/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Catalog/Models/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xNb2RlbHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Catalog/Models/Delete.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Catalog/Models/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xNb2RlbHNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Catalog/Models/Details.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Catalog/Models/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xNb2RlbHNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Catalog/Models/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Catalog/Models/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xNb2RlbHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Catalog/Models/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Catalog/Models/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xNb2RlbHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Error.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Materials/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Materials/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0ZXJpYWxzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Materials/Delete.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Materials/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0ZXJpYWxzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Materials/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Materials/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0ZXJpYWxzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Materials/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Materials/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0ZXJpYWxzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Media/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Media/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVkaWFcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Media/Delete.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Media/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVkaWFcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Media/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Media/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVkaWFcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Media/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Media/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVkaWFcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Orders/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Orders/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Orders/Details.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Orders/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Orders/Execute.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Orders/Execute.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXEV4ZWN1dGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Orders/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Orders/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Orders/StepView.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Orders/StepView.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXFN0ZXBWaWV3LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Orders/Summary.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Orders/Summary.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXFN1bW1hcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Privacy.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Shared/_LoginPartial.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Templates/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Templates/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVtcGxhdGVzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Templates/Delete.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Templates/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVtcGxhdGVzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Templates/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Templates/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVtcGxhdGVzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Templates/EditStep.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Templates/EditStep.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVtcGxhdGVzXEVkaXRTdGVwLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Templates/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Templates/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVtcGxhdGVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Templates/PreviewStep.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Templates/PreviewStep.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVtcGxhdGVzXFByZXZpZXdTdGVwLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Tools/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Tools/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG9vbHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Tools/Delete.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Tools/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG9vbHNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Tools/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Tools/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG9vbHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Tools/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Tools/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG9vbHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Workstations/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Workstations/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya3N0YXRpb25zXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Workstations/Delete.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Workstations/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya3N0YXRpb25zXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Workstations/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Workstations/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya3N0YXRpb25zXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Workstations/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Workstations/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya3N0YXRpb25zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/_ViewImports.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/_ViewStart.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Inventory/Movements.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Inventory/Movements.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XE1vdmVtZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Inventory/Stock.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Inventory/Stock.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XFN0b2NrLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Items/CreateWithPhoto.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Items/CreateWithPhoto.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRlbXNcQ3JlYXRlV2l0aFBob3RvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Items/Details.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Items/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRlbXNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Items/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Items/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRlbXNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Items/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Items/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRlbXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Items/PrintLabel.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Items/PrintLabel.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRlbXNcUHJpbnRMYWJlbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Items/QuickCreate.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Items/QuickCreate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRlbXNcUXVpY2tDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Locations/BulkGenerate.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Locations/BulkGenerate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25zXEJ1bGtHZW5lcmF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Locations/Create.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Locations/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25zXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Locations/Details.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Locations/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25zXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Locations/Edit.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Locations/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25zXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Locations/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Locations/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Locations/PrintLabel.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Locations/PrintLabel.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25zXFByaW50TGFiZWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Operations/Index.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Operations/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3BlcmF0aW9uc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Operations/Pick.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Operations/Pick.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3BlcmF0aW9uc1xQaWNrLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/Operations/Putaway.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/Operations/Putaway.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3BlcmF0aW9uc1xQdXRhd2F5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/_ViewImports.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Views/_ViewStart.cshtml]
+[D:/Manufacturing-Time-Inventory/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Manufacturing-Time/Pages/Shared/_Layout.cshtml]
+[D:/Manufacturing-Time-Inventory/Pages/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-ef7crykay9

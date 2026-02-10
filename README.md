@@ -32,6 +32,18 @@ A single web application that combines **time tracking** (manufacturing/assembly
 
 > 💡 **Note:** The database is created automatically on first run. No manual setup needed!
 
+### Troubleshooting (clone/pull on another machine)
+
+- **"Invalid object name 'Locations'"**  
+  The app now ensures inventory tables (Locations, Items, etc.) exist on every startup. If you still see this, run the app once so migrations and schema setup complete, or run `dotnet ef database update` from the project folder.
+
+- **"Address already in use" (e.g. port 5173)**  
+  Another process is using the default HTTP/HTTPS ports. Either stop that process or use different ports by adding to `appsettings.Development.json`:
+  ```json
+  "Kestrel": { "HttpPort": 5174, "HttpsPort": 7246 }
+  ```
+  Then open `http://localhost:5174` (or your chosen HTTP port).
+
 ---
 
 ## 📋 Complete User Guide

@@ -4952,11 +4952,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Manufacturing-Time\\ManufacturingTimeTracking.csproj",
+      "projectUniqueName": "D:\\Manufacturing-Time-Inventory\\ManufacturingTimeTracking.csproj",
       "projectName": "ManufacturingTimeTracking",
-      "projectPath": "D:\\Manufacturing-Time\\ManufacturingTimeTracking.csproj",
+      "projectPath": "D:\\Manufacturing-Time-Inventory\\ManufacturingTimeTracking.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "D:\\Manufacturing-Time\\obj\\",
+      "outputPath": "D:\\Manufacturing-Time-Inventory\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

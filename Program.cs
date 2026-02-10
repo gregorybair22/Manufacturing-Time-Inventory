@@ -150,8 +150,10 @@ using (var scope = app.Services.CreateScope())
                         INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260209161308_AddInventory', N'9.0.0');";
                     await cmd.ExecuteNonQueryAsync();
                 }
-                await DatabaseStartup.EnsureInventorySchemaAsync(connection, services.GetRequiredService<ILogger<Program>>());
             }
+
+            // Always ensure inventory tables (Locations, Items, etc.) so the app works after clone/pull on another machine.
+            await DatabaseStartup.EnsureInventorySchemaAsync(connection, services.GetRequiredService<ILogger<Program>>());
 
             // Add ImageUrl to Materials and MaterialId to Items if missing
             using (var command = connection.CreateCommand())
