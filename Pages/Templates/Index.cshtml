@@ -4,54 +4,59 @@
     ViewData["Title"] = "Process Templates";
 }
 
-<h1>Process Templates</h1>
+<div class="animate-fade-in">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 class="text-2xl font-bold text-slate-800">Process Templates</h1>
+        <a asp-page="Create" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 w-fit">Create New Template</a>
+    </div>
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New Template</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Model</th>
-            <th>Name</th>
-            <th>Variant (code)</th>
-            <th>Phases</th>
-            <th>Steps</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var template in Model.ProcessTemplates)
-        {
-            <tr>
-                <td>@template.MachineModelId</td>
-                <td>@(Model.MachineModelNames.ContainsKey(template.MachineModelId) ? Model.MachineModelNames[template.MachineModelId] : $"ID: {template.MachineModelId}")</td>
-                <td>
-                    @if (Model.MachineVariants.ContainsKey(template.MachineVariantId))
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50/80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Model</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Variant (code)</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Phases</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Steps</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var template in Model.ProcessTemplates)
                     {
-                        var variant = Model.MachineVariants[template.MachineVariantId];
-                        if (!string.IsNullOrEmpty(variant.Code))
-                        {
-                            <text>@variant.Name (<span style="color: red;">@variant.Code</span>)</text>
-                        }
-                        else
-                        {
-                            <text>@variant.Name</text>
-                        }
+                        <tr class="table-row-hover transition-colors duration-150">
+                            <td class="px-6 py-4 text-slate-600">@template.MachineModelId</td>
+                            <td class="px-6 py-4 font-medium text-slate-800">@(Model.MachineModelNames.ContainsKey(template.MachineModelId) ? Model.MachineModelNames[template.MachineModelId] : $"ID: {template.MachineModelId}")</td>
+                            <td class="px-6 py-4 text-slate-600">
+                                @if (Model.MachineVariants.ContainsKey(template.MachineVariantId))
+                                {
+                                    var variant = Model.MachineVariants[template.MachineVariantId];
+                                    if (!string.IsNullOrEmpty(variant.Code))
+                                    {
+                                        <text>@variant.Name (<span class="text-red-600 font-medium">@variant.Code</span>)</text>
+                                    }
+                                    else
+                                    {
+                                        <text>@variant.Name</text>
+                                    }
+                                }
+                                else
+                                {
+                                    <text>ID: @template.MachineVariantId</text>
+                                }
+                            </td>
+                            <td class="px-6 py-4 text-slate-600">@template.Phases.Count</td>
+                            <td class="px-6 py-4 text-slate-600">@template.Phases.Sum(p => p.Steps.Count)</td>
+                            <td class="px-6 py-4 text-right">
+                                <a asp-page="./Edit" asp-route-id="@template.Id" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 transition-all duration-200 mr-2">Edit</a>
+                                <a asp-page="./Delete" asp-route-id="@template.Id" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-red-600 text-red-600 text-sm font-medium hover:bg-red-50 transition-all duration-200">Delete</a>
+                            </td>
+                        </tr>
                     }
-                    else
-                    {
-                        <text>ID: @template.MachineVariantId</text>
-                    }
-                </td>
-                <td>@template.Phases.Count</td>
-                <td>@template.Phases.Sum(p => p.Steps.Count)</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@template.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-                    <a asp-page="./Delete" asp-route-id="@template.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

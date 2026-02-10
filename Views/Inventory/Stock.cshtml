@@ -2,28 +2,33 @@
 @{
     ViewData["Title"] = "Stock";
 }
-<h2>Stock (snapshot)</h2>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>SKU</th>
-            <th>Item</th>
-            <th>Location</th>
-            <th>Quantity</th>
-            <th>Updated</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var s in Model)
-    {
-        <tr>
-            <td>@s.Item?.Sku</td>
-            <td>@s.Item?.Name</td>
-            <td>@s.Location?.Code</td>
-            <td>@s.Quantity</td>
-            <td>@s.UpdatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="animate-fade-in">
+    <h1 class="text-2xl font-bold text-slate-800 mb-6">Stock (snapshot)</h1>
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50/80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Item</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Location</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Quantity</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Updated</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var s in Model)
+                    {
+                        <tr class="table-row-hover transition-colors duration-150">
+                            <td class="px-6 py-4 font-medium text-slate-800">@s.Item?.Sku</td>
+                            <td class="px-6 py-4 text-slate-800">@s.Item?.Name</td>
+                            <td class="px-6 py-4 text-slate-600">@s.Location?.Code</td>
+                            <td class="px-6 py-4 text-slate-600">@s.Quantity</td>
+                            <td class="px-6 py-4 text-slate-600">@s.UpdatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

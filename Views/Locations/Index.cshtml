@@ -5,24 +5,24 @@
     var zone = (string)(ViewBag.Zone ?? "");
     var msg = TempData["Msg"] as string;
 }
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Locations (XY)</h2>
-    <div>
-        <a class="btn btn-outline-primary" asp-action="BulkGenerate">Bulk generate</a>
-        <a class="btn btn-primary" asp-action="Create">New</a>
+<div class="animate-fade-in">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 class="text-2xl font-bold text-slate-800">Locations (XY)</h1>
+        <div class="flex gap-2">
+            <a class="inline-flex items-center px-4 py-2.5 rounded-xl border border-blue-600 text-blue-600 font-medium hover:bg-blue-50 transition-all duration-200" asp-action="BulkGenerate">Bulk generate</a>
+            <a class="inline-flex items-center px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-200" asp-action="Create">New</a>
+        </div>
     </div>
-</div>
 
-@if (!string.IsNullOrWhiteSpace(msg))
-{
-    <div class="alert alert-success">@msg</div>
-}
+    @if (!string.IsNullOrWhiteSpace(msg))
+    {
+        <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">@msg</div>
+    }
 
-<form method="get" class="mb-3">
-    <div class="row g-2 align-items-end">
-        <div class="col-md-4">
-            <label class="form-label">Zone</label>
-            <select class="form-select" name="zone">
+    <form method="get" class="mb-6 flex flex-wrap gap-4 items-end">
+        <div class="min-w-[180px]">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Zone</label>
+            <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" name="zone">
                 <option value="">(all)</option>
                 @foreach (var z in zones)
                 {
@@ -30,47 +30,49 @@
                 }
             </select>
         </div>
-        <div class="col-md-2">
-            <button class="btn btn-outline-secondary w-100">Filter</button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all duration-200">Filter</button>
+    </form>
+
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden mb-6">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50/80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Zone</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">X</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Y</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Z</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Cap.</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Blocked</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var l in Model)
+                    {
+                        <tr class="table-row-hover transition-colors duration-150">
+                            <td class="px-6 py-4"><code class="px-2 py-1 rounded bg-slate-100 text-slate-700 text-sm">@l.Code</code></td>
+                            <td class="px-6 py-4 text-slate-800">@l.Zone</td>
+                            <td class="px-6 py-4 text-slate-600">@l.X</td>
+                            <td class="px-6 py-4 text-slate-600">@l.Y</td>
+                            <td class="px-6 py-4 text-slate-600">@(l.Z?.ToString() ?? "—")</td>
+                            <td class="px-6 py-4 text-slate-600">@l.Type</td>
+                            <td class="px-6 py-4 text-slate-600">@l.CapacityUnits</td>
+                            <td class="px-6 py-4"><span class="inline-flex px-2 py-0.5 rounded text-xs font-medium @(l.IsBlocked ? "bg-red-100 text-red-800" : "bg-slate-100 text-slate-600")">@(l.IsBlocked ? "Yes" : "No")</span></td>
+                            <td class="px-6 py-4 text-right">
+                                <a class="inline-flex items-center px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 mr-2" asp-action="Details" asp-route-id="@l.Id">Details</a>
+                                <a class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700" asp-action="PrintLabel" asp-route-id="@l.Id" target="_blank">QR</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
-</form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Code</th>
-            <th>Zone</th>
-            <th>X</th>
-            <th>Y</th>
-            <th>Z</th>
-            <th>Type</th>
-            <th>Cap.</th>
-            <th>Blocked</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var l in Model)
-    {
-        <tr>
-            <td><code>@l.Code</code></td>
-            <td>@l.Zone</td>
-            <td>@l.X</td>
-            <td>@l.Y</td>
-            <td>@(l.Z?.ToString() ?? "-")</td>
-            <td>@l.Type</td>
-            <td>@l.CapacityUnits</td>
-            <td>@(l.IsBlocked ? "Yes" : "No")</td>
-            <td>
-                <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@l.Id">Details</a>
-                <a class="btn btn-sm btn-primary" asp-action="PrintLabel" asp-route-id="@l.Id" target="_blank">QR</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-<div class="alert alert-info">
-    Tip: print the QR for each location and stick it on the shelf. For putaway, the operator scans the location and the item tag. Use type "Workstation" for production stations so items can be moved from warehouse to production.
+    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-sm">
+        Tip: print the QR for each location and stick it on the shelf. For putaway, the operator scans the location and the item tag. Use type "Workstation" for production stations so items can be moved from warehouse to production.
+    </div>
 </div>

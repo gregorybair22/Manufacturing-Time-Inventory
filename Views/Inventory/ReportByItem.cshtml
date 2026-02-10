@@ -2,39 +2,44 @@
 @{
     ViewData["Title"] = "Report by Item";
 }
-<h2>Report by Item</h2>
-<p class="text-muted">Stock grouped by product (SKU), with locations.</p>
-<a asp-action="Reports" class="btn btn-outline-secondary mb-3">← Back to reports</a>
-
-<div class="table-responsive">
-    <table class="table table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th>SKU</th>
-                <th>Name</th>
-                <th>Model/Type</th>
-                <th>Total</th>
-                <th>Locations</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model)
-            {
-                <tr>
-                    <td><strong>@r.Sku</strong></td>
-                    <td>@r.Name</td>
-                    <td>@(string.IsNullOrWhiteSpace(r.ModelOrType) ? "—" : r.ModelOrType)</td>
-                    <td>@r.TotalQuantity</td>
-                    <td>
-                        <ul class="list-unstyled mb-0 small">
-                            @foreach (var loc in r.Locations.OrderByDescending(x => x.Quantity))
-                            {
-                                <li>@loc.LocationCode: <strong>@loc.Quantity</strong></li>
-                            }
-                        </ul>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="animate-fade-in">
+    <div class="mb-6">
+        <a asp-action="Reports" class="inline-flex items-center text-slate-600 hover:text-slate-800 font-medium mb-3">← Back to reports</a>
+        <h1 class="text-2xl font-bold text-slate-800">Report by Item</h1>
+        <p class="text-slate-500">Stock grouped by product (SKU), with locations.</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50/80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Model/Type</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Locations</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var r in Model)
+                    {
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 font-medium text-slate-800">@r.Sku</td>
+                            <td class="px-6 py-4 text-slate-800">@r.Name</td>
+                            <td class="px-6 py-4 text-slate-600">@(string.IsNullOrWhiteSpace(r.ModelOrType) ? "—" : r.ModelOrType)</td>
+                            <td class="px-6 py-4 text-slate-600">@r.TotalQuantity</td>
+                            <td class="px-6 py-4">
+                                <ul class="space-y-0.5 text-sm text-slate-600">
+                                    @foreach (var loc in r.Locations.OrderByDescending(x => x.Quantity))
+                                    {
+                                        <li>@loc.LocationCode: <strong class="text-slate-800">@loc.Quantity</strong></li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

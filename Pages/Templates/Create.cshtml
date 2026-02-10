@@ -4,39 +4,39 @@
     ViewData["Title"] = "Create Template";
 }
 
-<h1>Create Process Template</h1>
+<div class="animate-fade-in max-w-2xl">
+    <h1 class="text-2xl font-bold text-slate-800 mb-2">Create Process Template</h1>
+    <p class="text-slate-500 mb-6">Select machine model and variant, optionally copy from an existing template.</p>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ProcessTemplate.MachineModelId" class="control-label">Machine Model</label>
-                <select asp-for="ProcessTemplate.MachineModelId" class="form-control" asp-items="Model.MachineModels">
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 p-6">
+        <form method="post" class="space-y-5">
+            <div asp-validation-summary="ModelOnly" class="p-4 rounded-xl bg-red-50 text-red-700 text-sm"></div>
+            <div>
+                <label asp-for="ProcessTemplate.MachineModelId" class="block text-sm font-medium text-slate-700 mb-1.5">Machine Model</label>
+                <select asp-for="ProcessTemplate.MachineModelId" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200" asp-items="Model.MachineModels">
                     <option value="">-- Select Model --</option>
                 </select>
-                <span asp-validation-for="ProcessTemplate.MachineModelId" class="text-danger"></span>
+                <span asp-validation-for="ProcessTemplate.MachineModelId" class="text-red-600 text-sm mt-1 block"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ProcessTemplate.MachineVariantId" class="control-label">Machine Variant</label>
-                <select asp-for="ProcessTemplate.MachineVariantId" class="form-control">
+            <div>
+                <label asp-for="ProcessTemplate.MachineVariantId" class="block text-sm font-medium text-slate-700 mb-1.5">Machine Variant</label>
+                <select asp-for="ProcessTemplate.MachineVariantId" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
                     <option value="">-- Select Variant --</option>
                 </select>
-                <span asp-validation-for="ProcessTemplate.MachineVariantId" class="text-danger"></span>
+                <span asp-validation-for="ProcessTemplate.MachineVariantId" class="text-red-600 text-sm mt-1 block"></span>
             </div>
-            <div class="form-group mt-3">
-                <label class="control-label">Copy from Existing Template (Optional)</label>
-                <select id="copyTemplateId" class="form-control">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">Copy from Existing Template (Optional)</label>
+                <select id="copyTemplateId" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
                     <option value="">-- Select Template to Copy From --</option>
                 </select>
-                <small class="form-text text-muted">Select an existing template to copy its phases and steps</small>
-            </div>
-            <div class="form-group mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+                <p class="text-slate-500 text-sm mt-1">Select an existing template to copy its phases and steps</p>
             </div>
             <input type="hidden" id="copyFromTemplateId" name="copyFromTemplateId" />
+            <div class="flex gap-3 pt-2">
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">Create</button>
+                <a asp-page="Index" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all duration-200">Cancel</a>
+            </div>
         </form>
     </div>
 </div>
@@ -48,7 +48,6 @@
             var modelId = this.value;
             var variantSelect = document.getElementById('ProcessTemplate_MachineVariantId');
             variantSelect.innerHTML = '<option value="">-- Select Variant --</option>';
-            
             if (modelId) {
                 fetch('/api/variants?modelId=' + modelId)
                     .then(response => response.json())
@@ -62,8 +61,6 @@
                     });
             }
         });
-
-        // Populate templates dropdown (machine model names e.g. D600, S600 - variant)
         var copyTemplateSelect = document.getElementById('copyTemplateId');
         @if (Model.AvailableTemplates != null)
         {
@@ -77,7 +74,6 @@
                 </text>
             }
         }
-
         copyTemplateSelect.addEventListener('change', function() {
             document.getElementById('copyFromTemplateId').value = this.value;
         });

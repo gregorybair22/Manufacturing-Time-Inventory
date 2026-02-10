@@ -39,7 +39,7 @@
     function showCameraError(msg) {
         if (cameraError) {
             cameraError.textContent = msg || '';
-            cameraError.classList.toggle('d-none', !msg);
+            cameraError.classList.toggle('hidden', !msg);
         }
     }
 
@@ -54,10 +54,10 @@
             return navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
                 cameraStream = stream;
                 if (cameraVideo) cameraVideo.srcObject = stream;
-                if (cameraContainer) cameraContainer.style.display = 'block';
-                if (startCameraBtn) startCameraBtn.classList.add('d-none');
-                if (captureBtn) captureBtn.classList.remove('d-none');
-                if (stopCameraBtn) stopCameraBtn.classList.remove('d-none');
+                if (cameraContainer) cameraContainer.classList.remove('hidden');
+                if (startCameraBtn) startCameraBtn.classList.add('hidden');
+                if (captureBtn) captureBtn.classList.remove('hidden');
+                if (stopCameraBtn) stopCameraBtn.classList.remove('hidden');
             });
         };
         tryVideo({ video: { facingMode: 'environment' } })
@@ -74,10 +74,10 @@
             cameraStream = null;
         }
         if (cameraVideo) cameraVideo.srcObject = null;
-        if (cameraContainer) cameraContainer.style.display = 'none';
-        if (startCameraBtn) startCameraBtn.classList.remove('d-none');
-        if (captureBtn) captureBtn.classList.add('d-none');
-        if (stopCameraBtn) stopCameraBtn.classList.add('d-none');
+        if (cameraContainer) cameraContainer.classList.add('hidden');
+        if (startCameraBtn) startCameraBtn.classList.remove('hidden');
+        if (captureBtn) captureBtn.classList.add('hidden');
+        if (stopCameraBtn) stopCameraBtn.classList.add('hidden');
         showCameraError('');
     }
 

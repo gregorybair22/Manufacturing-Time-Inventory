@@ -2,55 +2,66 @@
 @{
     ViewData["Title"] = "Details";
 }
-<div class="d-flex justify-content-between align-items-center">
-    <h2>@Model.Sku - @Model.Name</h2>
-    <div>
-        <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" target="_blank" class="btn btn-outline-success">Print label</a>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+<div class="animate-fade-in max-w-4xl">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 class="text-2xl font-bold text-slate-800">@Model.Sku — @Model.Name</h1>
+        <div class="flex gap-2">
+            <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" target="_blank" class="px-4 py-2 rounded-xl border border-emerald-600 text-emerald-600 font-medium hover:bg-emerald-50 transition-all duration-200">Print label</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="px-4 py-2 rounded-xl border border-blue-600 text-blue-600 font-medium hover:bg-blue-50 transition-all duration-200">Edit</a>
+        </div>
     </div>
-</div>
 
-<div class="card p-3 mt-3">
-    <div class="row g-3">
-        <div class="col-md-3">
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 p-6 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
             {
-                <img src="@Model.ImagePath" class="img-fluid img-thumbnail" alt="Item image" />
+                <div>
+                    <img src="@Model.ImagePath" class="rounded-xl border border-slate-100 w-full max-h-48 object-cover" alt="Item image" />
+                </div>
             }
+            <div class="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "sm:col-span-2" : "sm:col-span-2") space-y-3">
+                <div><span class="text-sm font-medium text-slate-500">Serialized</span><br /><span class="text-slate-800">@(Model.IsSerialized ? "Yes" : "No")</span></div>
+                <div><span class="text-sm font-medium text-slate-500">Family</span><br /><span class="text-slate-800">@(Model.Family ?? "—")</span></div>
+                <div><span class="text-sm font-medium text-slate-500">Model/Type</span><br /><span class="text-slate-800">@(string.IsNullOrWhiteSpace(Model.ModelOrType) ? "—" : Model.ModelOrType)</span></div>
+                <div><span class="text-sm font-medium text-slate-500">Unit</span><br /><span class="text-slate-800">@(Model.Unit ?? "—")</span></div>
+                @if (Model.MaterialId.HasValue)
+                {
+                    <div><span class="text-sm font-medium text-slate-500">Linked to Material</span><br /><span class="text-slate-800">@(Model.Material?.Name ?? "ID " + Model.MaterialId)</span></div>
+                }
+            </div>
         </div>
-        <div class="col-md-9">
-            <div><strong>Serialized:</strong> @(Model.IsSerialized ? "Yes" : "No")</div>
-            <div><strong>Family:</strong> @Model.Family</div>
-            <div><strong>Model/Type:</strong> @(string.IsNullOrWhiteSpace(Model.ModelOrType) ? "—" : Model.ModelOrType)</div>
-            <div><strong>Unit:</strong> @Model.Unit</div>
-            @if (Model.MaterialId.HasValue)
-            {
-                <div><strong>Linked to Material:</strong> @(Model.Material?.Name ?? "ID " + Model.MaterialId)</div>
-            }
+    </div>
+
+    <h2 class="text-lg font-semibold text-slate-800 mb-3">Associated tags</h2>
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50/80">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Pack</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var t in Model.Tags)
+                    {
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 text-slate-800">@t.TagType</td>
+                            <td class="px-6 py-4"><code class="px-2 py-1 rounded bg-slate-100 text-slate-700 text-sm">@t.Code</code></td>
+                            <td class="px-6 py-4 text-slate-600">@t.PackQuantity</td>
+                            <td class="px-6 py-4 text-right">
+                                <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" asp-route-tagId="@t.Id" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-emerald-600 text-emerald-600 text-sm font-medium hover:bg-emerald-50 mr-2">Print label</a>
+                                @if (t.TagType == "QR")
+                                {
+                                    <a href="@Url.Action("ItemQr", new { code = t.Code })" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50">View QR</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
-<h4 class="mt-4">Associated tags</h4>
-<table class="table align-middle">
-    <thead>
-        <tr><th>Type</th><th>Code</th><th>Pack</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-    @foreach (var t in Model.Tags)
-    {
-        <tr>
-            <td>@t.TagType</td>
-            <td><code>@t.Code</code></td>
-            <td>@t.PackQuantity</td>
-            <td>
-                <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" asp-route-tagId="@t.Id" target="_blank" class="btn btn-sm btn-outline-success">Print label</a>
-                @if (t.TagType == "QR")
-                {
-                    <a href="@Url.Action("ItemQr", new { code = t.Code })" target="_blank" class="btn btn-sm btn-outline-secondary">View QR</a>
-                }
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>

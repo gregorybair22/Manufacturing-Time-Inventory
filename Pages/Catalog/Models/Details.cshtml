@@ -4,181 +4,159 @@
     ViewData["Title"] = "Model Details";
 }
 
-<h1>Model Details</h1>
+<div class="animate-fade-in max-w-4xl">
+    <h1 class="text-2xl font-bold text-slate-800 mb-2">Model Details</h1>
+    <p class="text-slate-500 mb-6">Machine model, variants, and components.</p>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["Error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
-
-<div>
-    <h4>Machine Model</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MachineModel.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MachineModel.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Variants
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.MachineModel.Variants.Any())
-            {
-                <ul class="list-unstyled">
-                    @foreach (var variant in Model.MachineModel.Variants)
-                    {
-                        <li class="mb-2">
-                            <span>@variant.Name (@variant.Code)</span>
-                            <button type="button" class="btn btn-sm btn-outline-primary ms-2" 
-                                    onclick="editVariant(@variant.Id, '@variant.Name', '@variant.Code')">
-                                Edit
-                            </button>
-                            <form method="post" asp-page-handler="DeleteVariant" style="display:inline;" class="ms-2">
-                                <input type="hidden" name="variantId" value="@variant.Id" />
-                                <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger" 
-                                        onclick="return confirm('Are you sure you want to delete variant @variant.Name?');">
-                                    Delete
-                                </button>
-                            </form>
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <span>No variants</span>
-            }
-        </dd>
-    </dl>
-</div>
-
-<div class="mt-4">
-    <h5>Add New Variant</h5>
-    <form method="post" asp-page-handler="AddVariant" asp-route-id="@Model.MachineModel.Id" class="row g-3">
-        <div asp-validation-summary="All" class="text-danger mb-3"></div>
-        <input type="hidden" asp-for="NewVariant.MachineModelId" value="@Model.MachineModel.Id" />
-        <div class="col-md-4">
-            <label asp-for="NewVariant.Name" class="form-label">Name <span class="text-danger">*</span></label>
-            <input asp-for="NewVariant.Name" class="form-control" required />
-            <span asp-validation-for="NewVariant.Name" class="text-danger"></span>
-        </div>
-        <div class="col-md-4">
-            <label asp-for="NewVariant.Code" class="form-label">Code <span class="text-danger">*</span></label>
-            <input asp-for="NewVariant.Code" class="form-control" required />
-            <span asp-validation-for="NewVariant.Code" class="text-danger"></span>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label">&nbsp;</label>
-            <div>
-                <button type="submit" class="btn btn-primary">Add Variant</button>
-            </div>
-        </div>
-    </form>
-</div>
-<hr class="my-4" />
-<div class="mt-4">
-    <h5>Components (spare parts) for this machine</h5>
-    <p class="text-muted small">Used to generate pick lists when creating a new order. Add motors, sensors, PCs, etc.</p>
-    @if (Model.MachineModel.Components.Any())
+    @if (TempData["Success"] != null)
     {
-        <table class="table table-sm">
-            <thead>
-                <tr><th>Item (SKU)</th><th>Name</th><th>Model/Type</th><th>Qty</th><th>Notes</th><th></th></tr>
-            </thead>
-            <tbody>
-                @foreach (var c in Model.MachineModel.Components)
+        <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between" role="alert">
+            <span>@TempData["Success"]</span>
+            <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-800" aria-label="Dismiss">×</button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-center justify-between" role="alert">
+            <span>@TempData["Error"]</span>
+            <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800" aria-label="Dismiss">×</button>
+        </div>
+    }
+
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 p-6 mb-6">
+        <h2 class="text-lg font-semibold text-slate-700 mb-4">Machine Model</h2>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><dt class="text-sm font-medium text-slate-500">@Html.DisplayNameFor(model => model.MachineModel.Name)</dt><dd class="font-medium text-slate-800">@Html.DisplayFor(model => model.MachineModel.Name)</dd></div>
+        </dl>
+        <div class="mt-4">
+            <dt class="text-sm font-medium text-slate-500 mb-2">Variants</dt>
+            <dd>
+                @if (Model.MachineModel.Variants.Any())
                 {
-                    <tr>
-                        <td>@c.Item.Sku</td>
-                        <td>@c.Item.Name</td>
-                        <td>@c.Item.ModelOrType</td>
-                        <td>@c.Quantity</td>
-                        <td>@(c.Notes ?? "—")</td>
-                        <td>
-                            <form method="post" asp-page-handler="DeleteComponent" style="display:inline;">
-                                <input type="hidden" name="componentId" value="@c.Id" />
-                                <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this component?');">Remove</button>
-                            </form>
-                        </td>
-                    </tr>
+                    <ul class="space-y-2">
+                        @foreach (var variant in Model.MachineModel.Variants)
+                        {
+                            <li class="flex flex-wrap items-center gap-2 p-2 rounded-lg bg-slate-50">
+                                <span class="font-medium text-slate-800">@variant.Name (@variant.Code)</span>
+                                <button type="button" class="text-sm px-3 py-1 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50" onclick="editVariant(@variant.Id, '@variant.Name.Replace("'", "\\'")', '@variant.Code.Replace("'", "\\'")')">Edit</button>
+                                <form method="post" asp-page-handler="DeleteVariant" class="inline">
+                                    <input type="hidden" name="variantId" value="@variant.Id" />
+                                    <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
+                                    <button type="submit" class="text-sm px-3 py-1 rounded-lg border border-red-600 text-red-600 hover:bg-red-50" onclick="return confirm('Are you sure you want to delete variant @variant.Name?');">Delete</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
                 }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p class="text-muted">No components defined. Add items below to build the list for pick lists.</p>
-    }
-    <form method="post" asp-page-handler="AddComponent" asp-route-id="@Model.MachineModel.Id" class="row g-3 mt-2">
-        <div class="col-auto">
-            <label class="form-label">Item</label>
-            <select asp-for="NewComponentItemId" asp-items="Model.ItemSelectList" class="form-select">
-                <option value="">-- Select item --</option>
-            </select>
+                else
+                {
+                    <span class="text-slate-500">No variants</span>
+                }
+            </dd>
         </div>
-        <div class="col-auto">
-            <label class="form-label">Qty</label>
-            <input asp-for="NewComponentQuantity" class="form-control" type="number" min="1" style="width:5em;" />
-        </div>
-        <div class="col-auto">
-            <label class="form-label">Notes</label>
-            <input asp-for="NewComponentNotes" class="form-control" placeholder="Optional" style="width:10em;" />
-        </div>
-        <div class="col-auto align-bottom">
-            <label class="form-label">&nbsp;</label>
-            <button type="submit" class="btn btn-primary d-block">Add component</button>
-        </div>
-    </form>
-</div>
+    </div>
 
-<div class="mt-3">
-    <a asp-page="./Edit" asp-route-id="@Model.MachineModel.Id" class="btn btn-primary">Edit</a>
-    <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
-</div>
-
-<!-- Edit Variant Modal -->
-<div class="modal fade" id="editVariantModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Variant</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-slate-700 mb-3">Add New Variant</h3>
+        <form method="post" asp-page-handler="AddVariant" asp-route-id="@Model.MachineModel.Id" class="flex flex-wrap gap-4 items-end">
+            <div asp-validation-summary="All" class="w-full text-red-600 text-sm"></div>
+            <input type="hidden" asp-for="NewVariant.MachineModelId" value="@Model.MachineModel.Id" />
+            <div class="min-w-[140px]">
+                <label asp-for="NewVariant.Name" class="block text-sm font-medium text-slate-700 mb-1">Name <span class="text-red-500">*</span></label>
+                <input asp-for="NewVariant.Name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" required />
+                <span asp-validation-for="NewVariant.Name" class="text-red-600 text-sm"></span>
             </div>
-            <form method="post" asp-page-handler="UpdateVariant">
-                <div class="modal-body">
-                    <input type="hidden" id="editVariantId" name="variantId" />
-                    <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
-                    <div class="mb-3">
-                        <label for="editVariantName" class="form-label">Name <span class="text-danger">*</span></label>
-                        <input type="text" id="editVariantName" name="name" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="editVariantCode" class="form-label">Code <span class="text-danger">*</span></label>
-                        <input type="text" id="editVariantCode" name="code" class="form-control" required />
-                    </div>
+            <div class="min-w-[120px]">
+                <label asp-for="NewVariant.Code" class="block text-sm font-medium text-slate-700 mb-1">Code <span class="text-red-500">*</span></label>
+                <input asp-for="NewVariant.Code" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" required />
+                <span asp-validation-for="NewVariant.Code" class="text-red-600 text-sm"></span>
+            </div>
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md">Add Variant</button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-slate-700 mb-1">Components (spare parts)</h3>
+        <p class="text-slate-500 text-sm mb-4">Used to generate pick lists when creating a new order. Add motors, sensors, PCs, etc.</p>
+        @if (Model.MachineModel.Components.Any())
+        {
+            <div class="overflow-x-auto rounded-xl border border-slate-100">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50/80"><tr><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Item (SKU)</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Name</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Model/Type</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Qty</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Notes</th><th class="px-4 py-3"></th></tr></thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach (var c in Model.MachineModel.Components)
+                        {
+                            <tr class="table-row-hover">
+                                <td class="px-4 py-3 text-slate-800">@c.Item.Sku</td>
+                                <td class="px-4 py-3 text-slate-800">@c.Item.Name</td>
+                                <td class="px-4 py-3 text-slate-600">@c.Item.ModelOrType</td>
+                                <td class="px-4 py-3 text-slate-600">@c.Quantity</td>
+                                <td class="px-4 py-3 text-slate-500">@(c.Notes ?? "—")</td>
+                                <td class="px-4 py-3">
+                                    <form method="post" asp-page-handler="DeleteComponent" class="inline">
+                                        <input type="hidden" name="componentId" value="@c.Id" />
+                                        <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
+                                        <button type="submit" class="text-sm px-3 py-1 rounded-lg border border-red-600 text-red-600 hover:bg-red-50" onclick="return confirm('Remove this component?');">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-slate-500 text-sm mb-4">No components defined. Add items below to build the list for pick lists.</p>
+        }
+        <form method="post" asp-page-handler="AddComponent" asp-route-id="@Model.MachineModel.Id" class="flex flex-wrap gap-4 items-end mt-4">
+            <div class="min-w-[180px]">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Item</label>
+                <select asp-for="NewComponentItemId" asp-items="Model.ItemSelectList" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
+                    <option value="">-- Select item --</option>
+                </select>
+            </div>
+            <div class="w-20">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Qty</label>
+                <input asp-for="NewComponentQuantity" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" type="number" min="1" />
+            </div>
+            <div class="min-w-[140px]">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Notes</label>
+                <input asp-for="NewComponentNotes" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Optional" />
+            </div>
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md">Add component</button>
+        </form>
+    </div>
+
+    <div class="flex gap-3">
+        <a asp-page="./Edit" asp-route-id="@Model.MachineModel.Id" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md">Edit</a>
+        <a asp-page="./Index" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50">Back to List</a>
+    </div>
+</div>
+
+<!-- Edit Variant Modal (Tailwind) -->
+<div id="editVariantModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeEditVariantModal()"></div>
+    <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 p-6 animate-scale-in">
+        <h4 class="text-lg font-semibold text-slate-800 mb-4">Edit Variant</h4>
+        <form method="post" asp-page-handler="UpdateVariant">
+            <input type="hidden" id="editVariantId" name="variantId" />
+            <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
+            <div class="space-y-4">
+                <div>
+                    <label for="editVariantName" class="block text-sm font-medium text-slate-700 mb-1">Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="editVariantName" name="name" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" required />
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                <div>
+                    <label for="editVariantCode" class="block text-sm font-medium text-slate-700 mb-1">Code <span class="text-red-500">*</span></label>
+                    <input type="text" id="editVariantCode" name="code" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" required />
                 </div>
-            </form>
-        </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50" onclick="closeEditVariantModal()">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700">Save Changes</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -189,8 +167,12 @@
             document.getElementById('editVariantId').value = id;
             document.getElementById('editVariantName').value = name;
             document.getElementById('editVariantCode').value = code;
-            var modal = new bootstrap.Modal(document.getElementById('editVariantModal'));
-            modal.show();
+            document.getElementById('editVariantModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeEditVariantModal() {
+            document.getElementById('editVariantModal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
     </script>
 }
