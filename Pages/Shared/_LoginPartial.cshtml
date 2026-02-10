@@ -1,26 +1,17 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ManufacturingTimeTracking.Models.ApplicationUser> SignInManager
-@inject UserManager<ManufacturingTimeTracking.Models.ApplicationUser> UserManager
 
-<ul class="navbar-nav">
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <span class="nav-link text-dark">Hello @User.Identity?.Name!</span>
-    </li>
-    <li class="nav-item">
-        <form class="form-inline" asp-page="/Account/Logout" method="post">
-            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
+    <span class="text-slate-600 text-sm font-medium">Hello, @User.Identity?.Name!</span>
+    <form asp-page="/Account/Logout" method="post" class="inline">
+        <button type="submit" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Logout</button>
+    </form>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-page="/Account/Login">Login</a>
-    </li>
+    <a asp-page="/Account/Register" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-all duration-200 font-medium">Register</a>
+    <a asp-page="/Account/Login" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-200 font-medium">Login</a>
 }
-</ul>
+</div>

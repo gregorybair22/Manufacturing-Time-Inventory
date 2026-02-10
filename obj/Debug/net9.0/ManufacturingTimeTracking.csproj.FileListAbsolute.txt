@@ -508,7 +508,6 @@ D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\scopedcss\bundle\ManufacturingTimeTracking.styles.css
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\scopedcss\projectbundle\ManufacturingTimeTracking.bundle.scp.css
-D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\o0kyreauot-b9sayid5wm.gz
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\cog9himb7k-61n19gt1b8.gz
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\qp9mb2irji-xkxx3v1ltb.gz
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\pblnqhg6i0-xtxxf3hu2r.gz
@@ -584,3 +583,4 @@ D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ManufacturingTimeTracking.pdb
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ManufacturingTimeTracking.genruntimeconfig.cache
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ref\ManufacturingTimeTracking.dll
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\o0kyreauot-uhwpluftgk.gz

@@ -4,138 +4,131 @@
     ViewData["Title"] = "Pick List";
 }
 
-<h1>Pick List</h1>
-<p class="text-muted">Walk the warehouse positions and pick each component. Scan the QR label when you pick an item to mark it as picked. You can open this list at any time; progress is saved.</p>
-
-<div class="mb-3">
-    <a asp-page="./Details" asp-route-id="@Model.Order.Id" class="btn btn-outline-secondary">← Order details</a>
-    <a asp-page="./Index" class="btn btn-outline-secondary">Back to orders</a>
-</div>
-
-@if (TempData["PickListSuccess"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["PickListSuccess"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="animate-fade-in">
+    <div class="flex flex-wrap gap-3 mb-6">
+        <a asp-page="./Details" asp-route-id="@Model.Order.Id" class="inline-flex items-center px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all duration-200">← Order details</a>
+        <a asp-page="./Index" class="inline-flex items-center px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all duration-200">Back to orders</a>
     </div>
-}
-@if (TempData["PickListError"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["PickListError"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
 
-<div class="card mb-4">
-    <div class="card-body">
-        <dl class="row mb-0">
-            <dt class="col-sm-2">Order</dt>
-            <dd class="col-sm-10">@Model.Order.ExternalRef — @Model.Order.SerialNumber</dd>
-            <dt class="col-sm-2">Machine model</dt>
-            <dd class="col-sm-10">@Model.MachineModelName</dd>
-        </dl>
-    </div>
-</div>
-
-@if (Model.Lines.Any())
-{
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Scan QR when you pick an item</h5>
-        </div>
-        <div class="card-body">
-            <form method="post" asp-page-handler="Scan" asp-route-id="@Model.OrderId" class="row g-2">
-                <div class="col-auto flex-grow-1">
-                    <label class="form-label visually-hidden">Scanned code</label>
-                    <input type="text" name="scannedCode" class="form-control form-control-lg" placeholder="Scan QR or enter tag code / SKU" autofocus />
-                </div>
-                <div class="col-auto">
-                    <label class="form-label visually-hidden">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary btn-lg">Mark picked</button>
-                </div>
-            </form>
-            <p class="small text-muted mb-0 mt-2">Use the barcode/QR scanner or type the code from the item label. The list below will update and show &quot;Picked&quot; when done.</p>
-        </div>
-    </div>
-}
-
-@if (!Model.Lines.Any())
-{
-    <div class="alert alert-info">
-        No components are defined for this machine model. Add components in <strong>Catalog → Models → [Model] → Components</strong> to generate pick lists.
-    </div>
-}
-else
-{
-    <p class="text-muted small">List is ordered by warehouse position (zone, then location) so you can walk the shelves in order.</p>
-    <table class="table table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th>Status</th>
-                <th>SKU</th>
-                <th>Name</th>
-                <th>Model/Type</th>
-                <th>Qty</th>
-                <th>Picked</th>
-                <th>Available</th>
-                <th>Warehouse positions</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var line in Model.Lines)
-            {
-                var isPicked = line.QuantityPicked >= line.QuantityNeeded;
-                var shortSupply = line.TotalAvailable < line.QuantityNeeded;
-                <tr class="@(shortSupply && !isPicked ? "table-warning" : "") @(isPicked ? "table-success" : "")">
-                    <td>
-                        @if (isPicked)
-                        {
-                            <span class="badge bg-success">Picked</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary">@line.QuantityPicked / @line.QuantityNeeded</span>
-                        }
-                    </td>
-                    <td><strong>@line.Sku</strong></td>
-                    <td>@line.Name</td>
-                    <td>@(string.IsNullOrWhiteSpace(line.ModelOrType) ? "—" : line.ModelOrType)</td>
-                    <td>@line.QuantityNeeded</td>
-                    <td><strong>@line.QuantityPicked</strong></td>
-                    <td>
-                        @line.TotalAvailable
-                        @if (shortSupply && !isPicked)
-                        {
-                            <span class="text-danger small">(short)</span>
-                        }
-                    </td>
-                    <td>
-                        @if (line.Locations.Any())
-                        {
-                            <ul class="list-unstyled mb-0 small">
-                                @foreach (var loc in line.Locations)
-                                {
-                                    <li><strong>@loc.Code</strong> @(string.IsNullOrEmpty(loc.Zone) ? "" : $"({loc.Zone})") — @loc.Quantity</li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <span class="text-muted">No stock</span>
-                        }
-                    </td>
-                    <td>@(line.Notes ?? "—")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    var allPicked = Model.Lines.All(l => l.QuantityPicked >= l.QuantityNeeded);
-    if (allPicked)
+    @if (TempData["PickListSuccess"] != null)
     {
-        <div class="alert alert-success mt-3">
-            <strong>All components picked.</strong> You have the complete spare parts for this machine.
+        <div class="mb-6 p-4 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-between" role="alert">
+            <span>@TempData["PickListSuccess"]</span>
+            <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-800 p-1">×</button>
         </div>
     }
-}
+    @if (TempData["PickListError"] != null)
+    {
+        <div class="mb-6 p-4 rounded-xl bg-red-50 text-red-800 border border-red-200 flex items-center justify-between" role="alert">
+            <span>@TempData["PickListError"]</span>
+            <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 p-1">×</button>
+        </div>
+    }
+
+    <div class="bg-white rounded-2xl shadow-soft border border-slate-100 p-6 mb-6">
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div><dt class="text-sm font-medium text-slate-500">Order</dt><dd class="font-medium text-slate-800">@Model.Order.ExternalRef — @Model.Order.SerialNumber</dd></div>
+            <div><dt class="text-sm font-medium text-slate-500">Machine model</dt><dd class="font-medium text-slate-800">@Model.MachineModelName</dd></div>
+        </dl>
+    </div>
+
+    @if (Model.Lines.Any())
+    {
+        <div class="bg-blue-600 rounded-2xl shadow-card overflow-hidden mb-6">
+            <div class="px-6 py-4 text-white">
+                <h2 class="text-lg font-semibold">Scan QR when you pick an item</h2>
+            </div>
+            <div class="bg-white px-6 py-4">
+                <form method="post" asp-page-handler="Scan" asp-route-id="@Model.OrderId" class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" name="scannedCode" class="flex-1 min-w-0 px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="Scan QR or enter tag code / SKU" autofocus />
+                    <button type="submit" class="px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">Mark picked</button>
+                </form>
+                <p class="text-slate-500 text-sm mt-2">Use the barcode/QR scanner or type the code from the item label. The list below will update when done.</p>
+            </div>
+        </div>
+    }
+
+    @if (!Model.Lines.Any())
+    {
+        <div class="p-6 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700">
+            No components are defined for this machine model. Add components in <strong>Catalog → Models → [Model] → Components</strong> to generate pick lists.
+        </div>
+    }
+    else
+    {
+        <p class="text-slate-500 text-sm mb-4">List is ordered by warehouse position (zone, then location) so you can walk the shelves in order.</p>
+        <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50/80">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Model/Type</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Qty</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Picked</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Available</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Warehouse positions</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach (var line in Model.Lines)
+                        {
+                            var isPicked = line.QuantityPicked >= line.QuantityNeeded;
+                            var shortSupply = line.TotalAvailable < line.QuantityNeeded;
+                            <tr class="table-row-hover transition-colors @(shortSupply && !isPicked ? "bg-amber-50/50" : "") @(isPicked ? "bg-emerald-50/50" : "")">
+                                <td class="px-6 py-4">
+                                    @if (isPicked)
+                                    {
+                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Picked</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">@line.QuantityPicked / @line.QuantityNeeded</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 font-medium text-slate-800">@line.Sku</td>
+                                <td class="px-6 py-4 text-slate-600">@line.Name</td>
+                                <td class="px-6 py-4 text-slate-600">@(string.IsNullOrWhiteSpace(line.ModelOrType) ? "—" : line.ModelOrType)</td>
+                                <td class="px-6 py-4 text-slate-600">@line.QuantityNeeded</td>
+                                <td class="px-6 py-4 font-semibold text-slate-800">@line.QuantityPicked</td>
+                                <td class="px-6 py-4 text-slate-600">
+                                    @line.TotalAvailable
+                                    @if (shortSupply && !isPicked)
+                                    {
+                                        <span class="text-red-600 text-xs">(short)</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-slate-600 text-sm">
+                                    @if (line.Locations.Any())
+                                    {
+                                        <ul class="list-none space-y-0.5">
+                                            @foreach (var loc in line.Locations)
+                                            {
+                                                <li><strong>@loc.Code</strong> @(string.IsNullOrEmpty(loc.Zone) ? "" : $"({loc.Zone})") — @loc.Quantity</li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-slate-400">No stock</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-slate-600 text-sm">@(line.Notes ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        var allPicked = Model.Lines.All(l => l.QuantityPicked >= l.QuantityNeeded);
+        if (allPicked)
+        {
+            <div class="mt-6 p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium">
+                All components picked. You have the complete spare parts for this machine.
+            </div>
+        }
+    }
+</div>
