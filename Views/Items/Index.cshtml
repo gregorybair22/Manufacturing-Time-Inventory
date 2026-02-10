@@ -22,6 +22,7 @@
             <th>SKU</th>
             <th>Name</th>
             <th>Family</th>
+            <th>Model/Type</th>
             <th></th>
         </tr>
     </thead>
@@ -32,6 +33,7 @@
             <td>@i.Sku</td>
             <td>@i.Name</td>
             <td>@i.Family</td>
+            <td>@i.ModelOrType</td>
             <td><a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@i.Id">View</a></td>
         </tr>
     }

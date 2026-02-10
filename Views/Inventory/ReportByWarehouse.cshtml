@@ -1,0 +1,44 @@
+@model IEnumerable<ManufacturingTimeTracking.Controllers.ReportByWarehouseRow>
+@{
+    ViewData["Title"] = "Report by Warehouse";
+}
+<h2>Report by Warehouse</h2>
+<p class="text-muted">Stock grouped by location.</p>
+<a asp-action="Reports" class="btn btn-outline-secondary mb-3">← Back to reports</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Location</th>
+                <th>Zone</th>
+                <th>Total units</th>
+                <th>Lines</th>
+                <th>Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td><strong>@r.LocationCode</strong></td>
+                    <td>@r.Zone</td>
+                    <td>@r.TotalQuantity</td>
+                    <td>@r.LineCount</td>
+                    <td>
+                        <ul class="list-unstyled mb-0 small">
+                            @foreach (var line in r.Items.OrderByDescending(x => x.Quantity).Take(20))
+                            {
+                                <li>@line.Sku — @line.Name: <strong>@line.Quantity</strong></li>
+                            }
+                            @if (r.Items.Count > 20)
+                            {
+                                <li class="text-muted">… and @(r.Items.Count - 20) more</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

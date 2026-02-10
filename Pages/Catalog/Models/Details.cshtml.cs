@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ManufacturingTimeTracking.Data;
 using ManufacturingTimeTracking.Models.Catalog;
@@ -20,6 +21,17 @@ public class DetailsModel : PageModel
     [BindProperty]
     public MachineVariant NewVariant { get; set; } = new();
 
+    public SelectList ItemSelectList { get; set; } = null!;
+
+    [BindProperty]
+    public int? NewComponentItemId { get; set; }
+
+    [BindProperty]
+    public int NewComponentQuantity { get; set; } = 1;
+
+    [BindProperty]
+    public string? NewComponentNotes { get; set; }
+
     public async Task<IActionResult> OnGetAsync(int? id)
     {
         if (id == null)
@@ -29,6 +41,8 @@ public class DetailsModel : PageModel
 
         var machineModel = await _context.MachineModels
             .Include(m => m.Variants)
+            .Include(m => m.Components)
+                .ThenInclude(c => c.Item)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (machineModel == null)
@@ -38,6 +52,8 @@ public class DetailsModel : PageModel
 
         MachineModel = machineModel;
         NewVariant.MachineModelId = machineModel.Id;
+        var items = await _context.Items.OrderBy(i => i.Sku).ToListAsync();
+        ItemSelectList = new SelectList(items, "Id", "Sku", null, "ModelOrType");
         return Page();
     }
 
@@ -137,6 +153,46 @@ public class DetailsModel : PageModel
         await _context.SaveChangesAsync();
 
         TempData["Success"] = $"Variant '{variant.Name}' updated successfully!";
+        return RedirectToPage("./Details", new { id = modelId });
+    }
+
+    public async Task<IActionResult> OnPostAddComponentAsync(int? id, int? newComponentItemId, int newComponentQuantity, string? newComponentNotes)
+    {
+        var modelId = id ?? 0;
+        if (modelId <= 0 || !newComponentItemId.HasValue || newComponentQuantity < 1)
+        {
+            TempData["Error"] = "Select an item and enter quantity (≥ 1).";
+            return RedirectToPage("./Details", new { id = modelId });
+        }
+
+        var exists = await _context.MachineModelComponents
+            .AnyAsync(c => c.MachineModelId == modelId && c.ItemId == newComponentItemId.Value);
+        if (exists)
+        {
+            TempData["Error"] = "This item is already in the component list.";
+            return RedirectToPage("./Details", new { id = modelId });
+        }
+
+        _context.MachineModelComponents.Add(new MachineModelComponent
+        {
+            MachineModelId = modelId,
+            ItemId = newComponentItemId.Value,
+            Quantity = newComponentQuantity,
+            Notes = string.IsNullOrWhiteSpace(newComponentNotes) ? null : newComponentNotes.Trim()
+        });
+        await _context.SaveChangesAsync();
+        TempData["Success"] = "Component added. Use Orders to generate pick lists.";
+        return RedirectToPage("./Details", new { id = modelId });
+    }
+
+    public async Task<IActionResult> OnPostDeleteComponentAsync(int componentId, int modelId)
+    {
+        var comp = await _context.MachineModelComponents.FindAsync(componentId);
+        if (comp != null)
+        {
+            _context.MachineModelComponents.Remove(comp);
+            await _context.SaveChangesAsync();
+        }
         return RedirectToPage("./Details", new { id = modelId });
     }
 }

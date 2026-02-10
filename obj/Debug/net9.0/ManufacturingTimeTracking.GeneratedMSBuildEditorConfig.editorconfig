@@ -116,6 +116,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Manufacturing-Time-Inventory/Pages/Orders/PickList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXFBpY2tMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Manufacturing-Time-Inventory/Pages/Orders/StepView.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzXFN0ZXBWaWV3LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -202,6 +206,22 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/Manufacturing-Time-Inventory/Views/Inventory/Movements.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XE1vdmVtZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Manufacturing-Time-Inventory/Views/Inventory/ReportByItem.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XFJlcG9ydEJ5SXRlbS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Manufacturing-Time-Inventory/Views/Inventory/ReportByModel.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XFJlcG9ydEJ5TW9kZWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Manufacturing-Time-Inventory/Views/Inventory/ReportByWarehouse.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XFJlcG9ydEJ5V2FyZWhvdXNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Manufacturing-Time-Inventory/Views/Inventory/Reports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XFJlcG9ydHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Manufacturing-Time-Inventory/Views/Inventory/Stock.cshtml]

@@ -8,6 +8,7 @@
 
 <div class="mb-3">
     <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    <a asp-page="./PickList" asp-route-id="@Model.BuildOrder.Id" class="btn btn-outline-primary">Pick list (components)</a>
     <a asp-page="./Execute" asp-route-id="@Model.BuildOrder.Id" class="btn btn-primary">Execute</a>
 </div>
 

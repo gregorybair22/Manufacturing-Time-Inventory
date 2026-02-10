@@ -183,6 +183,16 @@ using (var scope = app.Services.CreateScope())
                     END";
                 await command.ExecuteNonQueryAsync();
             }
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"
+                    IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Items')
+                    AND NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Items]') AND name = 'ModelOrType')
+                    BEGIN
+                        ALTER TABLE [dbo].[Items] ADD [ModelOrType] NVARCHAR(64) NOT NULL DEFAULT '';
+                    END";
+                await command.ExecuteNonQueryAsync();
+            }
         }
         finally
         {

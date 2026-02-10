@@ -53,6 +53,7 @@ public class ItemsController : Controller
         item.Sku = model.Sku;
         item.Name = model.Name;
         item.Family = model.Family ?? "";
+        item.ModelOrType = model.ModelOrType ?? "";
         item.Unit = model.Unit ?? "ud";
         item.IsSerialized = model.IsSerialized;
         item.MaterialId = model.MaterialId;

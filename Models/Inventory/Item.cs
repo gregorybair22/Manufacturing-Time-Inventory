@@ -18,6 +18,10 @@ public class Item
     [MaxLength(256)]
     public string Family { get; set; } = "";
 
+    /// <summary>Model or type for reporting and machine component lists (e.g. Motor, Sensor, PC, D600).</summary>
+    [MaxLength(64)]
+    public string ModelOrType { get; set; } = "";
+
     [MaxLength(32)]
     public string Unit { get; set; } = "ud";
 

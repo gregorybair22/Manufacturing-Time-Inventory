@@ -1,0 +1,42 @@
+@model IEnumerable<ManufacturingTimeTracking.Controllers.ReportByModelRow>
+@{
+    ViewData["Title"] = "Report by Model / Type";
+}
+<h2>Report by Model / Type</h2>
+<p class="text-muted">Stock grouped by item model or type.</p>
+<a asp-action="Reports" class="btn btn-outline-secondary mb-3">← Back to reports</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Model / Type</th>
+                <th>Total units</th>
+                <th>Item count</th>
+                <th>Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td><strong>@r.ModelOrType</strong></td>
+                    <td>@r.TotalQuantity</td>
+                    <td>@r.ItemCount</td>
+                    <td>
+                        <ul class="list-unstyled mb-0 small">
+                            @foreach (var line in r.Lines.OrderByDescending(x => x.TotalQty).Take(30))
+                            {
+                                <li>@line.Sku — @line.Name: <strong>@line.TotalQty</strong></li>
+                            }
+                            @if (r.Lines.Count > 30)
+                            {
+                                <li class="text-muted">… and @(r.Lines.Count - 30) more</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

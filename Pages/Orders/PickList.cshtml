@@ -1,0 +1,82 @@
+@page
+@model ManufacturingTimeTracking.Pages.Orders.PickListModel
+@{
+    ViewData["Title"] = "Pick List";
+}
+
+<h1>Pick List</h1>
+<p class="text-muted">Components to pick from warehouse for this order. Use this list to gather all spare parts for one complete machine.</p>
+
+<div class="mb-3">
+    <a asp-page="./Details" asp-route-id="@Model.Order.Id" class="btn btn-outline-secondary">← Order details</a>
+    <a asp-page="./Index" class="btn btn-outline-secondary">Back to orders</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-2">Order</dt>
+            <dd class="col-sm-10">@Model.Order.ExternalRef — @Model.Order.SerialNumber</dd>
+            <dt class="col-sm-2">Machine model</dt>
+            <dd class="col-sm-10">@Model.MachineModelName</dd>
+        </dl>
+    </div>
+</div>
+
+@if (!Model.Lines.Any())
+{
+    <div class="alert alert-info">
+        No components are defined for this machine model. Add components in <strong>Catalog → Models → [Model] → Components</strong> to generate pick lists.
+    </div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Model/Type</th>
+                <th>Qty needed</th>
+                <th>Available</th>
+                <th>Warehouse positions</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var line in Model.Lines)
+            {
+                var shortSupply = line.TotalAvailable < line.QuantityNeeded;
+                <tr class="@(shortSupply ? "table-warning" : "")">
+                    <td><strong>@line.Sku</strong></td>
+                    <td>@line.Name</td>
+                    <td>@(string.IsNullOrWhiteSpace(line.ModelOrType) ? "—" : line.ModelOrType)</td>
+                    <td>@line.QuantityNeeded</td>
+                    <td>
+                        @line.TotalAvailable
+                        @if (shortSupply)
+                        {
+                            <span class="text-danger small">(short)</span>
+                        }
+                    </td>
+                    <td>
+                        @if (line.Locations.Any())
+                        {
+                            <ul class="list-unstyled mb-0 small">
+                                @foreach (var loc in line.Locations)
+                                {
+                                    <li><strong>@loc.Code</strong> @(string.IsNullOrEmpty(loc.Zone) ? "" : $"({loc.Zone})") — @loc.Quantity</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No stock</span>
+                        }
+                    </td>
+                    <td>@(line.Notes ?? "—")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

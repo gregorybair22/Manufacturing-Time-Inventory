@@ -29,6 +29,7 @@ CREATE TABLE [dbo].[Items] (
     [Sku] nvarchar(64) NOT NULL,
     [Name] nvarchar(256) NOT NULL,
     [Family] nvarchar(256) NOT NULL,
+    [ModelOrType] nvarchar(64) NOT NULL DEFAULT '',
     [Unit] nvarchar(32) NOT NULL,
     [IsSerialized] bit NOT NULL,
     [ImagePath] nvarchar(512) NOT NULL,
@@ -108,7 +109,20 @@ CREATE TABLE [dbo].[RobotTasks] (
     CONSTRAINT [FK_RobotTasks_Items_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_RobotTasks_Locations_FromLocationId] FOREIGN KEY ([FromLocationId]) REFERENCES [dbo].[Locations] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_RobotTasks_Locations_ToLocationId] FOREIGN KEY ([ToLocationId]) REFERENCES [dbo].[Locations] ([Id]) ON DELETE NO ACTION
-);"
+);",
+            @"IF OBJECT_ID(N'[dbo].[MachineModelComponents]', N'U') IS NULL
+CREATE TABLE [dbo].[MachineModelComponents] (
+    [Id] int NOT NULL IDENTITY,
+    [MachineModelId] int NOT NULL,
+    [ItemId] int NOT NULL,
+    [Quantity] int NOT NULL DEFAULT 1,
+    [Notes] nvarchar(128) NULL,
+    CONSTRAINT [PK_MachineModelComponents] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_MachineModelComponents_MachineModels_MachineModelId] FOREIGN KEY ([MachineModelId]) REFERENCES [dbo].[MachineModels] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_MachineModelComponents_Items_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([Id]) ON DELETE NO ACTION
+);
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_MachineModelComponents_MachineModelId' AND object_id = OBJECT_ID(N'[dbo].[MachineModelComponents]'))
+CREATE INDEX [IX_MachineModelComponents_MachineModelId] ON [dbo].[MachineModelComponents] ([MachineModelId]);"
         };
 
         foreach (var batch in batches)

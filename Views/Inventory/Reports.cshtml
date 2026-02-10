@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Inventory Reports";
+}
+<h2>Inventory Reports</h2>
+<p class="text-muted">Choose a report to view stock by warehouse, item, or model/type.</p>
+<div class="list-group">
+    <a asp-action="ReportByWarehouse" class="list-group-item list-group-item-action">
+        <strong>By Warehouse</strong> — Stock grouped by location (warehouse/zone)
+    </a>
+    <a asp-action="ReportByItem" class="list-group-item list-group-item-action">
+        <strong>By Item</strong> — Stock grouped by product (SKU), with locations
+    </a>
+    <a asp-action="ReportByModel" class="list-group-item list-group-item-action">
+        <strong>By Model / Type</strong> — Stock grouped by item model or type
+    </a>
+</div>

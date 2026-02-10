@@ -577,10 +577,10 @@ D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.build.json
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.build.json.cache
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.development.json
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\Manufact.6413F3B6.Up2Date
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ManufacturingTimeTracking.dll
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\refint\ManufacturingTimeTracking.dll
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ManufacturingTimeTracking.pdb
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ManufacturingTimeTracking.genruntimeconfig.cache
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ref\ManufacturingTimeTracking.dll
+D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

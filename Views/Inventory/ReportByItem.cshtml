@@ -1,0 +1,40 @@
+@model IEnumerable<ManufacturingTimeTracking.Controllers.ReportByItemRow>
+@{
+    ViewData["Title"] = "Report by Item";
+}
+<h2>Report by Item</h2>
+<p class="text-muted">Stock grouped by product (SKU), with locations.</p>
+<a asp-action="Reports" class="btn btn-outline-secondary mb-3">← Back to reports</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Model/Type</th>
+                <th>Total</th>
+                <th>Locations</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td><strong>@r.Sku</strong></td>
+                    <td>@r.Name</td>
+                    <td>@(string.IsNullOrWhiteSpace(r.ModelOrType) ? "—" : r.ModelOrType)</td>
+                    <td>@r.TotalQuantity</td>
+                    <td>
+                        <ul class="list-unstyled mb-0 small">
+                            @foreach (var loc in r.Locations.OrderByDescending(x => x.Quantity))
+                            {
+                                <li>@loc.LocationCode: <strong>@loc.Quantity</strong></li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

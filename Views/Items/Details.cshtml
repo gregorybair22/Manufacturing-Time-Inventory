@@ -21,6 +21,7 @@
         <div class="col-md-9">
             <div><strong>Serialized:</strong> @(Model.IsSerialized ? "Yes" : "No")</div>
             <div><strong>Family:</strong> @Model.Family</div>
+            <div><strong>Model/Type:</strong> @(string.IsNullOrWhiteSpace(Model.ModelOrType) ? "—" : Model.ModelOrType)</div>
             <div><strong>Unit:</strong> @Model.Unit</div>
             @if (Model.MaterialId.HasValue)
             {

@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     // Catalog
     public DbSet<MachineModel> MachineModels { get; set; }
     public DbSet<MachineVariant> MachineVariants { get; set; }
+    public DbSet<MachineModelComponent> MachineModelComponents { get; set; }
     public DbSet<Workstation> Workstations { get; set; }
 
     // Templates
@@ -59,6 +60,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(v => v.MachineModel)
             .WithMany(m => m.Variants)
             .HasForeignKey(v => v.MachineModelId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<MachineModelComponent>()
+            .HasOne(c => c.MachineModel)
+            .WithMany(m => m.Components)
+            .HasForeignKey(c => c.MachineModelId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<MachineModelComponent>()
+            .HasOne(c => c.Item)
+            .WithMany()
+            .HasForeignKey(c => c.ItemId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<PhaseTemplate>()
