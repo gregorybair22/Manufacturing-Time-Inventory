@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ManufacturingTimeTracking")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad634d7d81708afff9fb0a5dcad670ca64b8223a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+28c4030cd09b1f1963d9f63e44356bce58fc1e0f")]
 [assembly: System.Reflection.AssemblyProductAttribute("ManufacturingTimeTracking")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ManufacturingTimeTracking")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

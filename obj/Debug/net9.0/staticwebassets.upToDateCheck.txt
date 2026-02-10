@@ -64,6 +64,10 @@ wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
 wwwroot\uploads\evidence\1\13\304b92d3-ee02-4226-a163-72161db05368.png
 wwwroot\uploads\evidence\1\13\80df611a-efe8-45e1-b8bc-566c658be98f.jpg
+wwwroot\uploads\inventory\092c362c-b224-437b-995b-856c0876bb76.jpeg
+wwwroot\uploads\inventory\109454a5-eb72-4d5d-b85d-89d63d674d9b.jpeg
+wwwroot\uploads\inventory\52629e19-241f-4a6a-8f59-bee9d58750d0.jpeg
+wwwroot\uploads\inventory\9e366744-7262-47a1-96b0-08d4be6ad0c8.jpeg
 wwwroot\uploads\materials\ab00470f-5ea5-49e3-86b4-262d805e0bdc.png
 wwwroot\uploads\templates\1\36\a3558d7e-14db-4439-8e01-723f85da3fa0.png
 D:\Manufacturing-Time-Inventory\wwwroot\css\site.css

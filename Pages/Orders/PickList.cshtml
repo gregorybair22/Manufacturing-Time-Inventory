@@ -5,12 +5,27 @@
 }
 
 <h1>Pick List</h1>
-<p class="text-muted">Components to pick from warehouse for this order. Use this list to gather all spare parts for one complete machine.</p>
+<p class="text-muted">Walk the warehouse positions and pick each component. Scan the QR label when you pick an item to mark it as picked. You can open this list at any time; progress is saved.</p>
 
 <div class="mb-3">
     <a asp-page="./Details" asp-route-id="@Model.Order.Id" class="btn btn-outline-secondary">← Order details</a>
     <a asp-page="./Index" class="btn btn-outline-secondary">Back to orders</a>
 </div>
+
+@if (TempData["PickListSuccess"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["PickListSuccess"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["PickListError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["PickListError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
 <div class="card mb-4">
     <div class="card-body">
@@ -23,6 +38,28 @@
     </div>
 </div>
 
+@if (Model.Lines.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Scan QR when you pick an item</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-page-handler="Scan" asp-route-id="@Model.OrderId" class="row g-2">
+                <div class="col-auto flex-grow-1">
+                    <label class="form-label visually-hidden">Scanned code</label>
+                    <input type="text" name="scannedCode" class="form-control form-control-lg" placeholder="Scan QR or enter tag code / SKU" autofocus />
+                </div>
+                <div class="col-auto">
+                    <label class="form-label visually-hidden">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary btn-lg">Mark picked</button>
+                </div>
+            </form>
+            <p class="small text-muted mb-0 mt-2">Use the barcode/QR scanner or type the code from the item label. The list below will update and show &quot;Picked&quot; when done.</p>
+        </div>
+    </div>
+}
+
 @if (!Model.Lines.Any())
 {
     <div class="alert alert-info">
@@ -31,13 +68,16 @@
 }
 else
 {
+    <p class="text-muted small">List is ordered by warehouse position (zone, then location) so you can walk the shelves in order.</p>
     <table class="table table-bordered">
         <thead class="table-light">
             <tr>
+                <th>Status</th>
                 <th>SKU</th>
                 <th>Name</th>
                 <th>Model/Type</th>
-                <th>Qty needed</th>
+                <th>Qty</th>
+                <th>Picked</th>
                 <th>Available</th>
                 <th>Warehouse positions</th>
                 <th>Notes</th>
@@ -46,15 +86,27 @@ else
         <tbody>
             @foreach (var line in Model.Lines)
             {
+                var isPicked = line.QuantityPicked >= line.QuantityNeeded;
                 var shortSupply = line.TotalAvailable < line.QuantityNeeded;
-                <tr class="@(shortSupply ? "table-warning" : "")">
+                <tr class="@(shortSupply && !isPicked ? "table-warning" : "") @(isPicked ? "table-success" : "")">
+                    <td>
+                        @if (isPicked)
+                        {
+                            <span class="badge bg-success">Picked</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@line.QuantityPicked / @line.QuantityNeeded</span>
+                        }
+                    </td>
                     <td><strong>@line.Sku</strong></td>
                     <td>@line.Name</td>
                     <td>@(string.IsNullOrWhiteSpace(line.ModelOrType) ? "—" : line.ModelOrType)</td>
                     <td>@line.QuantityNeeded</td>
+                    <td><strong>@line.QuantityPicked</strong></td>
                     <td>
                         @line.TotalAvailable
-                        @if (shortSupply)
+                        @if (shortSupply && !isPicked)
                         {
                             <span class="text-danger small">(short)</span>
                         }
@@ -79,4 +131,11 @@ else
             }
         </tbody>
     </table>
+    var allPicked = Model.Lines.All(l => l.QuantityPicked >= l.QuantityNeeded);
+    if (allPicked)
+    {
+        <div class="alert alert-success mt-3">
+            <strong>All components picked.</strong> You have the complete spare parts for this machine.
+        </div>
+    }
 }

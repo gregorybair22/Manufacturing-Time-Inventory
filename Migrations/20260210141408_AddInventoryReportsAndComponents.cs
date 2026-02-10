@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -32,51 +32,28 @@ namespace ManufacturingTimeTracking.Migrations
                 oldType: "decimal(18,2)",
                 oldNullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "ModelOrType",
-                table: "Items",
-                type: "nvarchar(64)",
-                maxLength: 64,
-                nullable: false,
-                defaultValue: "");
+            // Add ModelOrType only if missing (may already exist from Program.cs/DatabaseStartup)
+            migrationBuilder.Sql(@"
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[Items]') AND name = 'ModelOrType')
+ALTER TABLE [Items] ADD [ModelOrType] nvarchar(64) NOT NULL DEFAULT N'';");
 
-            migrationBuilder.CreateTable(
-                name: "MachineModelComponents",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MachineModelId = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MachineModelComponents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MachineModelComponents_Items_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "Items",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MachineModelComponents_MachineModels_MachineModelId",
-                        column: x => x.MachineModelId,
-                        principalTable: "MachineModels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MachineModelComponents_ItemId",
-                table: "MachineModelComponents",
-                column: "ItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MachineModelComponents_MachineModelId",
-                table: "MachineModelComponents",
-                column: "MachineModelId");
+            // Create MachineModelComponents only if missing
+            migrationBuilder.Sql(@"
+IF OBJECT_ID(N'[dbo].[MachineModelComponents]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[MachineModelComponents] (
+        [Id] int NOT NULL IDENTITY,
+        [MachineModelId] int NOT NULL,
+        [ItemId] int NOT NULL,
+        [Quantity] int NOT NULL,
+        [Notes] nvarchar(128) NULL,
+        CONSTRAINT [PK_MachineModelComponents] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_MachineModelComponents_Items_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([Id]) ON DELETE NO ACTION,
+        CONSTRAINT [FK_MachineModelComponents_MachineModels_MachineModelId] FOREIGN KEY ([MachineModelId]) REFERENCES [dbo].[MachineModels] ([Id]) ON DELETE CASCADE
+    );
+    CREATE INDEX [IX_MachineModelComponents_ItemId] ON [dbo].[MachineModelComponents] ([ItemId]);
+    CREATE INDEX [IX_MachineModelComponents_MachineModelId] ON [dbo].[MachineModelComponents] ([MachineModelId]);
+END");
         }
 
         /// <inheritdoc />
@@ -85,9 +62,9 @@ namespace ManufacturingTimeTracking.Migrations
             migrationBuilder.DropTable(
                 name: "MachineModelComponents");
 
-            migrationBuilder.DropColumn(
-                name: "ModelOrType",
-                table: "Items");
+            migrationBuilder.Sql(@"
+IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[Items]') AND name = 'ModelOrType')
+ALTER TABLE [Items] DROP COLUMN [ModelOrType];");
 
             migrationBuilder.AlterColumn<decimal>(
                 name: "Qty",

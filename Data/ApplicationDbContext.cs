@@ -34,6 +34,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     // Execution
     public DbSet<BuildOrder> BuildOrders { get; set; }
+    public DbSet<OrderPickLine> OrderPickLines { get; set; }
     public DbSet<BuildExecution> BuildExecutions { get; set; }
     public DbSet<PhaseExec> PhaseExecs { get; set; }
     public DbSet<StepExec> StepExecs { get; set; }
@@ -72,6 +73,20 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(c => c.ItemId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<OrderPickLine>()
+            .HasOne(l => l.BuildOrder)
+            .WithMany()
+            .HasForeignKey(l => l.BuildOrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<OrderPickLine>()
+            .HasOne(l => l.Item)
+            .WithMany()
+            .HasForeignKey(l => l.ItemId)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<OrderPickLine>()
+            .HasIndex(l => new { l.BuildOrderId, l.ItemId })
+            .IsUnique();
 
         builder.Entity<PhaseTemplate>()
             .HasOne(p => p.ProcessTemplate)

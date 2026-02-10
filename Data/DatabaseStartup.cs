@@ -122,7 +122,22 @@ CREATE TABLE [dbo].[MachineModelComponents] (
     CONSTRAINT [FK_MachineModelComponents_Items_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([Id]) ON DELETE NO ACTION
 );
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_MachineModelComponents_MachineModelId' AND object_id = OBJECT_ID(N'[dbo].[MachineModelComponents]'))
-CREATE INDEX [IX_MachineModelComponents_MachineModelId] ON [dbo].[MachineModelComponents] ([MachineModelId]);"
+CREATE INDEX [IX_MachineModelComponents_MachineModelId] ON [dbo].[MachineModelComponents] ([MachineModelId]);",
+            @"IF OBJECT_ID(N'[dbo].[OrderPickLines]', N'U') IS NULL
+CREATE TABLE [dbo].[OrderPickLines] (
+    [Id] int NOT NULL IDENTITY,
+    [BuildOrderId] int NOT NULL,
+    [ItemId] int NOT NULL,
+    [QuantityRequired] int NOT NULL,
+    [QuantityPicked] int NOT NULL DEFAULT 0,
+    CONSTRAINT [PK_OrderPickLines] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrderPickLines_BuildOrders_BuildOrderId] FOREIGN KEY ([BuildOrderId]) REFERENCES [dbo].[BuildOrders] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_OrderPickLines_Items_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([Id]) ON DELETE NO ACTION
+);
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_OrderPickLines_BuildOrderId' AND object_id = OBJECT_ID(N'[dbo].[OrderPickLines]'))
+CREATE INDEX [IX_OrderPickLines_BuildOrderId] ON [dbo].[OrderPickLines] ([BuildOrderId]);
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_OrderPickLines_BuildOrderId_ItemId' AND object_id = OBJECT_ID(N'[dbo].[OrderPickLines]'))
+CREATE UNIQUE INDEX [IX_OrderPickLines_BuildOrderId_ItemId] ON [dbo].[OrderPickLines] ([BuildOrderId], [ItemId]);"
         };
 
         foreach (var batch in batches)
