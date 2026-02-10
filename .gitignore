@@ -1,0 +1,6 @@
+# Ignore IDE files
+.vs
+bin
+
+appsettings.Development.json
+appsettings.json

@@ -1,0 +1,148 @@
+@page
+@model ManufacturingTimeTracking.Pages.Orders.SummaryModel
+@{
+    ViewData["Title"] = "Order Summary";
+}
+
+<h1>Order Summary</h1>
+
+<div class="mb-3">
+    <a asp-page="./Index" class="btn btn-secondary">Back to Orders</a>
+    @if (Model.LatestExecution != null)
+    {
+        <a asp-page="./Summary" asp-page-handler="ExportCsv" asp-route-id="@Model.BuildOrder.Id" class="btn btn-primary">Export CSV</a>
+    }
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Order Information</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-2">External Ref:</dt>
+            <dd class="col-sm-10">@Model.BuildOrder.ExternalRef</dd>
+            <dt class="col-sm-2">Serial Number:</dt>
+            <dd class="col-sm-10">@Model.BuildOrder.SerialNumber</dd>
+            <dt class="col-sm-2">Status:</dt>
+            <dd class="col-sm-10">
+                <span class="badge @(Model.BuildOrder.Status == "Completed" ? "bg-success" : Model.BuildOrder.Status == "InProgress" ? "bg-warning" : "bg-secondary")">
+                    @Model.BuildOrder.Status
+                </span>
+            </dd>
+            <dt class="col-sm-2">Created:</dt>
+            <dd class="col-sm-10">@Model.BuildOrder.CreatedAt.ToString("g")</dd>
+        </dl>
+    </div>
+</div>
+
+@if (Model.LatestExecution != null)
+{
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Execution Summary</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-2">Started:</dt>
+                <dd class="col-sm-10">@Model.LatestExecution.StartedAt.ToString("g")</dd>
+                @if (Model.LatestExecution.FinishedAt.HasValue)
+                {
+                    <dt class="col-sm-2">Finished:</dt>
+                    <dd class="col-sm-10">@Model.LatestExecution.FinishedAt.Value.ToString("g")</dd>
+                    <dt class="col-sm-2">Duration:</dt>
+                    <dd class="col-sm-10">@((Model.LatestExecution.FinishedAt.Value - Model.LatestExecution.StartedAt).ToString(@"d\d\ hh\:mm\:ss"))</dd>
+                }
+                <dt class="col-sm-2">Status:</dt>
+                <dd class="col-sm-10">
+                    <span class="badge @(Model.LatestExecution.Status == "Completed" ? "bg-success" : "bg-warning")">
+                        @Model.LatestExecution.Status
+                    </span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    @foreach (var phase in Model.LatestExecution.Phases.OrderBy(p => p.SortOrder))
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>@phase.Name</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Step</th>
+                                <th>Status</th>
+                                <th>Skip Reason</th>
+                                <th>Total Time</th>
+                                <th>Runs</th>
+                                <th>Workstations</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var step in phase.Steps.OrderBy(s => s.SortOrder))
+                            {
+                                var totalSeconds = step.Runs.Where(r => r.DurationSeconds.HasValue).Sum(r => r.DurationSeconds.Value);
+                                var timeSpan = TimeSpan.FromSeconds(totalSeconds);
+                                var runs = step.Runs.Where(r => r.DurationSeconds.HasValue).Count();
+                                var workstations = step.Runs
+                                    .Where(r => r.Workstation != null)
+                                    .Select(r => r.Workstation!.Name)
+                                    .Distinct()
+                                    .ToList();
+
+                                <tr>
+                                    <td>@step.SortOrder</td>
+                                    <td>
+                                        <strong>@step.Title</strong>
+                                        @if (!string.IsNullOrEmpty(step.Instructions))
+                                        {
+                                            <br /><small class="text-muted">@step.Instructions</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge @(step.State == "Done" ? "bg-success" : step.State == "Skipped" ? "bg-warning" : step.State == "InProgress" ? "bg-primary" : "bg-secondary")">
+                                            @step.State
+                                        </span>
+                                    </td>
+                                    <td>@(step.SkipReason ?? "-")</td>
+                                    <td>
+                                        @if (totalSeconds > 0)
+                                        {
+                                            <span>@timeSpan.ToString(@"hh\:mm\:ss")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>@runs</td>
+                                    <td>
+                                        @if (workstations.Any())
+                                        {
+                                            <span>@string.Join(", ", workstations)</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info">
+        No execution found for this order.
+    </div>
+}

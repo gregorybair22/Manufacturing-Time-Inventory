@@ -1,0 +1,68 @@
+@page
+@model ManufacturingTimeTracking.Pages.Orders.CreateModel
+@{
+    ViewData["Title"] = "Create Build Order";
+}
+
+<h1>Create Build Order</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="BuildOrder.ExternalRef" class="control-label">External Reference</label>
+                <input asp-for="BuildOrder.ExternalRef" class="form-control" />
+                <span asp-validation-for="BuildOrder.ExternalRef" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="BuildOrder.SerialNumber" class="control-label">Serial Number</label>
+                <input asp-for="BuildOrder.SerialNumber" class="form-control" />
+                <span asp-validation-for="BuildOrder.SerialNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="BuildOrder.MachineModelId" class="control-label">Machine Model</label>
+                <select asp-for="BuildOrder.MachineModelId" class="form-control" asp-items="Model.MachineModels" id="modelSelect">
+                    <option value="">-- Select Model --</option>
+                </select>
+                <span asp-validation-for="BuildOrder.MachineModelId" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="BuildOrder.MachineVariantId" class="control-label">Machine Variant</label>
+                <select asp-for="BuildOrder.MachineVariantId" class="form-control" id="variantSelect">
+                    <option value="">-- Select Variant --</option>
+                </select>
+                <span asp-validation-for="BuildOrder.MachineVariantId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('modelSelect').addEventListener('change', function() {
+            var modelId = this.value;
+            var variantSelect = document.getElementById('variantSelect');
+            variantSelect.innerHTML = '<option value="">-- Select Variant --</option>';
+            
+            if (modelId) {
+                fetch('/api/variants?modelId=' + modelId)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(variant => {
+                            var option = document.createElement('option');
+                            option.value = variant.id;
+                            option.textContent = variant.name + ' (' + variant.code + ')';
+                            variantSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
+    </script>
+}

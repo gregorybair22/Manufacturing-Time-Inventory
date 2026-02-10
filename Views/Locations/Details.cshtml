@@ -1,0 +1,37 @@
+@model ManufacturingTimeTracking.Models.Inventory.Location
+@{
+    ViewData["Title"] = "Location";
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Location: <code>@Model.Code</code></h2>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <div><strong>Zone:</strong> @Model.Zone</div>
+            <div><strong>X/Y/Z:</strong> @Model.X / @Model.Y / @(Model.Z?.ToString() ?? "-")</div>
+            <div><strong>Type:</strong> @Model.Type</div>
+            <div><strong>Capacity:</strong> @Model.CapacityUnits</div>
+            <div><strong>Blocked:</strong> @(Model.IsBlocked ? "Yes" : "No")</div>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            This QR encodes <code>@Model.Code</code>. You can print it and stick it on the shelf or at the production station.
+        </div>
+
+        <div class="d-flex gap-2">
+            <a class="btn btn-primary" asp-action="PrintLabel" asp-route-id="@Model.Id" target="_blank">Print label (60×30mm)</a>
+            <a class="btn btn-outline-primary" href="@Url.Action("Qr", new { id = Model.Id, pixelsPerModule = 10 })" target="_blank">Open QR (PNG)</a>
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-zone="@Model.Zone">Back</a>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-3 text-center">
+            <img alt="QR" class="img-fluid" src="@Url.Action("Qr", new { id = Model.Id, pixelsPerModule = 10 })" />
+            <div class="mt-2"><code>@Model.Code</code></div>
+        </div>
+    </div>
+</div>

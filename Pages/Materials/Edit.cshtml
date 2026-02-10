@@ -1,0 +1,46 @@
+@page
+@model ManufacturingTimeTracking.Pages.Materials.EditModel
+@{
+    ViewData["Title"] = "Edit Material";
+}
+
+<h1>Edit Material</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Material.Id" />
+            <div class="form-group mb-3">
+                <label asp-for="Material.Name" class="control-label"></label>
+                <input asp-for="Material.Name" class="form-control" />
+                <span asp-validation-for="Material.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Material.Unit" class="control-label"></label>
+                <input asp-for="Material.Unit" class="form-control" />
+                <span asp-validation-for="Material.Unit" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="ImageFile" class="control-label">Image (Optional)</label>
+                @if (!string.IsNullOrEmpty(Model.Material.ImageUrl))
+                {
+                    <div class="mb-2">
+                        <img src="~/uploads/@Model.Material.ImageUrl" alt="@Model.Material.Name" class="img-thumbnail" style="max-height: 150px;" />
+                        <p class="small text-muted">Current image</p>
+                    </div>
+                }
+                <input type="file" asp-for="ImageFile" class="form-control" accept="image/jpeg,image/jpg,image/png,image/gif" />
+                <small class="form-text text-muted">Supported: JPEG, JPG, PNG, GIF. Leave empty to keep current image.</small>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,38 @@
+@page
+@model ManufacturingTimeTracking.Pages.Media.IndexModel
+@{
+    ViewData["Title"] = "Media";
+}
+
+<h1>Media</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New Media</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>URL/Path</th>
+            <th>Uploaded By</th>
+            <th>Uploaded At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var media in Model.MediaList)
+        {
+            <tr>
+                <td>@media.Type</td>
+                <td>@(media.UrlOrPath.Length > 50 ? media.UrlOrPath.Substring(0, 50) + "..." : media.UrlOrPath)</td>
+                <td>@media.UploadedBy</td>
+                <td>@media.UploadedAt.ToString("g")</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@media.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@media.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

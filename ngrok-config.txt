@@ -1,0 +1,7 @@
+# ngrok Domain Configuration
+# Change the domain name below to your custom ngrok domain
+# Leave it empty to use a random domain (free accounts)
+# Example: myapp.ngrok-free.app
+# Get your domain from: https://dashboard.ngrok.com/cloud-edge/domains
+
+DOMAIN=

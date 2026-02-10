@@ -1,0 +1,35 @@
+@page
+@model ManufacturingTimeTracking.Pages.Catalog.Models.IndexModel
+@{
+    ViewData["Title"] = "Machine Models";
+}
+
+<h1>Machine Models</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New Model</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Variants</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var machineModel in Model.MachineModels)
+        {
+            <tr>
+                <td>@machineModel.Name</td>
+                <td>@machineModel.Variants.Count</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@machineModel.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@machineModel.Id" class="btn btn-sm btn-outline-info">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@machineModel.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

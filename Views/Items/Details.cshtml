@@ -1,0 +1,55 @@
+@model ManufacturingTimeTracking.Models.Inventory.Item
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>@Model.Sku - @Model.Name</h2>
+    <div>
+        <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" target="_blank" class="btn btn-outline-success">Print label</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+    </div>
+</div>
+
+<div class="card p-3 mt-3">
+    <div class="row g-3">
+        <div class="col-md-3">
+            @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" class="img-fluid img-thumbnail" alt="Item image" />
+            }
+        </div>
+        <div class="col-md-9">
+            <div><strong>Serialized:</strong> @(Model.IsSerialized ? "Yes" : "No")</div>
+            <div><strong>Family:</strong> @Model.Family</div>
+            <div><strong>Unit:</strong> @Model.Unit</div>
+            @if (Model.MaterialId.HasValue)
+            {
+                <div><strong>Linked to Material:</strong> @(Model.Material?.Name ?? "ID " + Model.MaterialId)</div>
+            }
+        </div>
+    </div>
+</div>
+
+<h4 class="mt-4">Associated tags</h4>
+<table class="table align-middle">
+    <thead>
+        <tr><th>Type</th><th>Code</th><th>Pack</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    @foreach (var t in Model.Tags)
+    {
+        <tr>
+            <td>@t.TagType</td>
+            <td><code>@t.Code</code></td>
+            <td>@t.PackQuantity</td>
+            <td>
+                <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" asp-route-tagId="@t.Id" target="_blank" class="btn btn-sm btn-outline-success">Print label</a>
+                @if (t.TagType == "QR")
+                {
+                    <a href="@Url.Action("ItemQr", new { code = t.Code })" target="_blank" class="btn btn-sm btn-outline-secondary">View QR</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

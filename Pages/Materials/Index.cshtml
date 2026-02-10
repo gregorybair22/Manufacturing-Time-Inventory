@@ -1,0 +1,45 @@
+@page
+@model ManufacturingTimeTracking.Pages.Materials.IndexModel
+@{
+    ViewData["Title"] = "Materials";
+}
+
+<h1>Materials</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New Material</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Unit</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var material in Model.Materials)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(material.ImageUrl))
+                    {
+                        <img src="~/uploads/@material.ImageUrl" alt="@material.Name" class="img-thumbnail" style="max-height: 50px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
+                <td>@material.Name</td>
+                <td>@(material.Unit ?? "-")</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@material.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@material.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

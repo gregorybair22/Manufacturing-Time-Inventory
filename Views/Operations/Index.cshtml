@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Operations";
+}
+<h2>Plant operations</h2>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Putaway</h5>
+                <p class="card-text">Scan TAG and LOCATION (QR) to register entry at a shelf or workstation. Move items from Reception to warehouse or production station.</p>
+                <a class="btn btn-primary" asp-action="Putaway">Open Putaway</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Pick</h5>
+                <p class="card-text">Scan LOCATION and TAG, select destination (Production, Workshop, Station, or Order). Move items from warehouse to production.</p>
+                <a class="btn btn-primary" asp-action="Pick">Open Pick</a>
+            </div>
+        </div>
+    </div>
+</div>

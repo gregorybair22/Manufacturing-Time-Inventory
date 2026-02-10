@@ -1,0 +1,37 @@
+@model IEnumerable<ManufacturingTimeTracking.Models.Inventory.Movement>
+@{
+    ViewData["Title"] = "Movements";
+}
+<h2>Movements (ledger)</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>SKU</th>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>From</th>
+            <th>To</th>
+            <th>User</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td>@m.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@m.Type</td>
+            <td>@m.Item?.Sku</td>
+            <td>@m.Item?.Name</td>
+            <td>@m.Quantity</td>
+            <td>@(m.FromLocation?.Code ?? "-")</td>
+            <td>@(m.ToLocation?.Code ?? "-")</td>
+            <td>@m.PerformedBy</td>
+            <td>@m.Notes</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,36 @@
+@page
+@model ManufacturingTimeTracking.Pages.Workstations.IndexModel
+@{
+    ViewData["Title"] = "Workstations";
+}
+
+<h1>Workstations</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New Workstation</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Device ID</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var workstation in Model.Workstations)
+        {
+            <tr>
+                <td>@workstation.Name</td>
+                <td>@(workstation.DeviceId ?? "-")</td>
+                <td>@(workstation.Active ? "Yes" : "No")</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@workstation.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@workstation.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

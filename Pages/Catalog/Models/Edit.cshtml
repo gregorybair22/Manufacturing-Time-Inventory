@@ -1,0 +1,30 @@
+@page
+@model ManufacturingTimeTracking.Pages.Catalog.Models.EditModel
+@{
+    ViewData["Title"] = "Edit Model";
+}
+
+<h1>Edit Machine Model</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MachineModel.Id" />
+            <div class="form-group">
+                <label asp-for="MachineModel.Name" class="control-label"></label>
+                <input asp-for="MachineModel.Name" class="form-control" />
+                <span asp-validation-for="MachineModel.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

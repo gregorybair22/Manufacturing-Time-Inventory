@@ -1,0 +1,403 @@
+@page
+@model ManufacturingTimeTracking.Pages.Orders.ExecuteModel
+@using ManufacturingTimeTracking.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext Context
+@{
+    ViewData["Title"] = "Execute Manufacturing";
+    var workstations = await Context.Workstations.Where(w => w.Active).OrderBy(w => w.Name).ToListAsync();
+}
+
+<h1>Execute Manufacturing</h1>
+
+<div class="mb-3">
+    <a asp-page="./Index" class="btn btn-secondary">Back to Orders</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Order Information</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-2">External Ref:</dt>
+            <dd class="col-sm-10">@Model.BuildOrder.ExternalRef</dd>
+            <dt class="col-sm-2">Serial Number:</dt>
+            <dd class="col-sm-10">@Model.BuildOrder.SerialNumber</dd>
+            <dt class="col-sm-2">Status:</dt>
+            <dd class="col-sm-10">@Model.BuildOrder.Status</dd>
+        </dl>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model.CurrentExecution == null)
+{
+    <div class="alert alert-info">
+        <h5>Ready to Start Manufacturing</h5>
+        <p>Click the button below to start manufacturing. This will create a snapshot of the process template.</p>
+        <form method="post" asp-page-handler="StartManufacturing">
+            <input type="hidden" name="orderId" value="@Model.BuildOrder.Id" />
+            <button type="submit" class="btn btn-primary btn-lg">Start Manufacturing</button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="alert alert-success">
+        <strong>Manufacturing in Progress</strong> - Started at @Model.CurrentExecution.StartedAt.ToString("g")
+    </div>
+
+    @foreach (var phase in Model.CurrentExecution.Phases.OrderBy(p => p.SortOrder))
+    {
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">@phase.Name</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addStepModal@(phase.Id)">
+                    <i class="bi bi-plus-circle"></i> Add Step
+                </button>
+            </div>
+            <div class="card-body">
+                @foreach (var step in phase.Steps.OrderBy(s => s.SortOrder))
+                {
+                    var totalSeconds = step.Runs.Where(r => r.DurationSeconds.HasValue).Sum(r => r.DurationSeconds.Value);
+                    var timeSpan = TimeSpan.FromSeconds(totalSeconds);
+                    var runningStep = step.Runs.FirstOrDefault(r => r.FinishedAt == null);
+                    var completedRuns = step.Runs.Where(r => r.FinishedAt != null).OrderBy(r => r.StartedAt).ToList();
+                    
+                    <div class="card mb-2 @(step.State == "Skipped" ? "border-warning" : step.State == "Done" ? "border-success" : step.State == "InProgress" ? "border-primary" : "")">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="card-title">
+                                        <span class="badge bg-secondary me-2">@step.SortOrder</span>
+                                        @step.Title
+                                        @if (step.State == "Skipped")
+                                        {
+                                            <span class="badge bg-warning ms-2">Skipped</span>
+                                        }
+                                        else if (step.State == "Done")
+                                        {
+                                            <span class="badge bg-success ms-2">Done</span>
+                                        }
+                                        else if (step.State == "InProgress")
+                                        {
+                                            <span class="badge bg-primary ms-2">In Progress</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary ms-2">Pending</span>
+                                        }
+                                    </h6>
+                                    <p class="text-muted small mb-2">@step.Instructions</p>
+                                    
+                                    @if (!string.IsNullOrEmpty(step.SkipReason))
+                                    {
+                                        <div class="alert alert-warning py-2 px-3 mb-2">
+                                            <strong>Skip Reason:</strong> @step.SkipReason
+                                        </div>
+                                    }
+
+                                    @if (completedRuns.Any())
+                                    {
+                                        <div class="mb-2">
+                                            <strong>Runs:</strong>
+                                            @foreach (var run in completedRuns)
+                                            {
+                                                var runTime = run.DurationSeconds.HasValue ? TimeSpan.FromSeconds(run.DurationSeconds.Value) : TimeSpan.Zero;
+                                                <span class="badge bg-info me-1">
+                                                    @runTime.ToString(@"mm\:ss")
+                                                    @if (run.Workstation != null)
+                                                    {
+                                                        <text> (@run.Workstation.Name)</text>
+                                                    }
+                                                </span>
+                                            }
+                                            @if (runningStep != null)
+                                            {
+                                                <span class="badge bg-warning">Running...</span>
+                                            }
+                                        </div>
+                                    }
+
+                                    @if (step.Evidence.Any())
+                                    {
+                                        <div class="mb-2">
+                                            <strong>📚 Reference Instructions:</strong>
+                                            <small class="text-muted d-block mb-1">These instructions help future users understand how to perform this step</small>
+                                            <div class="d-flex flex-wrap gap-2 mt-1">
+                                                @foreach (var evidence in step.Evidence.OrderByDescending(e => e.CreatedAt))
+                                                {
+                                                    @if (evidence.Media.Type == "Image" && !string.IsNullOrEmpty(evidence.Media.UrlOrPath))
+                                                    {
+                                                        <div class="position-relative" style="width: 80px; height: 80px;">
+                                                            <img src="~/uploads/@evidence.Media.UrlOrPath" 
+                                                                 class="img-thumbnail" 
+                                                                 style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                                                                 data-bs-toggle="modal" 
+                                                                 data-bs-target="#instructionViewModal@(evidence.Id)"
+                                                                 alt="Instruction" />
+                                                            <div class="position-absolute bottom-0 end-0 bg-dark text-white px-1" style="font-size: 0.7rem;">
+                                                                @evidence.CreatedAt.ToString("HH:mm")
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else if (evidence.Media.Type == "Video" && !string.IsNullOrEmpty(evidence.Media.UrlOrPath))
+                                                    {
+                                                        <div class="position-relative border rounded p-2" style="width: 120px; height: 80px; cursor: pointer; background: #f8f9fa;"
+                                                             data-bs-toggle="modal" 
+                                                             data-bs-target="#instructionViewModal@(evidence.Id)">
+                                                            <div class="text-center">
+                                                                <div style="font-size: 2rem;">🎥</div>
+                                                                <small class="text-muted">Video</small>
+                                                            </div>
+                                                            <div class="position-absolute bottom-0 end-0 bg-dark text-white px-1" style="font-size: 0.7rem;">
+                                                                @evidence.CreatedAt.ToString("HH:mm")
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else if (!string.IsNullOrEmpty(evidence.Note))
+                                                    {
+                                                        <div class="border rounded p-2" style="max-width: 200px; cursor: pointer;" 
+                                                             data-bs-toggle="modal" 
+                                                             data-bs-target="#instructionViewModal@(evidence.Id)">
+                                                            <small class="text-muted">📝 Instruction</small>
+                                                            <div class="small">@(evidence.Note.Length > 50 ? evidence.Note.Substring(0, 50) + "..." : evidence.Note)</div>
+                                                            <div class="text-muted" style="font-size: 0.7rem;">@evidence.CreatedAt.ToString("HH:mm")</div>
+                                                        </div>
+                                                    }
+                                                    
+                                                    <!-- Instruction View Modal -->
+                                                    <div class="modal fade" id="instructionViewModal@(evidence.Id)" tabindex="-1">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">📚 Reference Instruction</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    @if (evidence.Media.Type == "Image" && !string.IsNullOrEmpty(evidence.Media.UrlOrPath))
+                                                                    {
+                                                                        <img src="~/uploads/@evidence.Media.UrlOrPath" class="img-fluid mb-2" alt="Instruction" />
+                                                                    }
+                                                                    else if (evidence.Media.Type == "Video" && !string.IsNullOrEmpty(evidence.Media.UrlOrPath))
+                                                                    {
+                                                                        <video controls class="w-100 mb-2" style="max-height: 500px;">
+                                                                            <source src="/uploads/@evidence.Media.UrlOrPath" type="video/mp4">
+                                                                            Your browser does not support the video tag.
+                                                                        </video>
+                                                                    }
+                                                                    @if (!string.IsNullOrEmpty(evidence.Note))
+                                                                    {
+                                                                        <p><strong>Instruction:</strong> @evidence.Note</p>
+                                                                    }
+                                                                    <p class="text-muted small">Added: @evidence.CreatedAt.ToString("g")</p>
+                                                                    <div class="alert alert-info mt-2">
+                                                                        <small>💡 This instruction helps future users understand how to perform this step.</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="mt-2">
+                                        <strong>Total Time:</strong>
+                                        @if (runningStep != null)
+                                        {
+                                            <span class="text-warning">Running...</span>
+                                        }
+                                        else if (totalSeconds > 0)
+                                        {
+                                            <span>@timeSpan.ToString(@"hh\:mm\:ss")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    @if (step.State == "Pending")
+                                    {
+                                        <a href="/Orders/StepView?stepExecId=@step.Id" target="_blank" class="btn btn-sm btn-outline-primary mb-1">Preview</a>
+                                        <button type="button" class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#startModal@(step.Id)">
+                                            Start
+                                        </button>
+                                        @if (step.AllowSkip)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-warning mb-1" data-bs-toggle="modal" data-bs-target="#skipModal@(step.Id)">
+                                                Skip
+                                            </button>
+                                        }
+                                    }
+                                    else if (step.State == "InProgress")
+                                    {
+                                        <a href="/Orders/StepView?stepExecId=@step.Id" target="_blank" class="btn btn-sm btn-primary mb-1">View Full Screen</a>
+                                        <form method="post" asp-page-handler="StopStep" style="display:inline;">
+                                            <input type="hidden" name="stepExecId" value="@step.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success mb-1">Stop</button>
+                                        </form>
+                                    }
+                                    else if (step.State == "Done")
+                                    {
+                                        <button type="button" class="btn btn-sm btn-info mb-1" data-bs-toggle="modal" data-bs-target="#startModal@(step.Id)">
+                                            Rework
+                                        </button>
+                                    }
+                                    
+                                    <button type="button" class="btn btn-sm btn-info mb-1" data-bs-toggle="modal" data-bs-target="#instructionModal@(step.Id)">
+                                        📚 Add Instruction
+                                    </button>
+
+                                    <!-- Start/Rework Modal -->
+                                    <div class="modal fade" id="startModal@(step.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Start Step</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form method="post" asp-page-handler="StartStepWithWorkstation">
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="stepExecId" value="@step.Id" />
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Workstation (Optional)</label>
+                                                            <select name="workstationId" class="form-select">
+                                                                <option value="">None</option>
+                                                                @foreach (var ws in workstations)
+                                                                {
+                                                                    <option value="@ws.Id">@ws.Name</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-primary">Start</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Skip Modal -->
+                                    <div class="modal fade" id="skipModal@(step.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Skip Step</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form method="post" asp-page-handler="SkipStep">
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="stepExecId" value="@step.Id" />
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Reason for skipping <span class="text-danger">*</span></label>
+                                                            <textarea name="skipReason" class="form-control" rows="3" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-warning">Skip Step</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Instruction Upload Modal -->
+                                    <div class="modal fade" id="instructionModal@(step.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">📚 Add Reference Instruction</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form method="post" asp-page-handler="UploadEvidence" enctype="multipart/form-data">
+                                                    <div class="modal-body">
+                                                        <div class="alert alert-info mb-3">
+                                                            <small><strong>💡 Purpose:</strong> Add manuals, tutorials, or step-by-step instructions that help future users understand how to perform this step. You can upload images (e.g., pictures of needed tools) or videos, or add written instructions.</small>
+                                                        </div>
+                                                        <input type="hidden" name="stepExecId" value="@step.Id" />
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Image or Video</label>
+                                                            <input type="file" name="imageFile" class="form-control" accept="image/*,video/*" />
+                                                            <small class="text-muted">Upload an image (e.g., picture of tools) or video tutorial</small>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Instruction / Description</label>
+                                                            <textarea name="note" class="form-control" rows="4" placeholder="Describe the instruction, tutorial, or step-by-step guide. For example: 'Required tools: Screwdriver M4, Wrench 10mm. First, check the alignment, then...'"></textarea>
+                                                            <small class="text-muted">Add detailed instructions that will help future users</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-primary">Add Instruction</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                
+                <!-- Add Step Modal -->
+                <div class="modal fade" id="addStepModal@(phase.Id)" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Step to @phase.Name</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="post" asp-page-handler="AddStep">
+                                <div class="modal-body">
+                                    <input type="hidden" name="phaseExecId" value="@phase.Id" />
+                                    <div class="mb-3">
+                                        <label class="form-label">Step Title <span class="text-danger">*</span></label>
+                                        <input type="text" name="title" class="form-control" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Instructions</label>
+                                        <textarea name="instructions" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="allowSkip" class="form-check-input" value="true" checked />
+                                            <label class="form-check-label">Allow Skip</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Add Step</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

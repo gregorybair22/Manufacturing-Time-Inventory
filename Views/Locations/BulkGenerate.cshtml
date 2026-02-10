@@ -1,0 +1,76 @@
+@model ManufacturingTimeTracking.Controllers.LocationsController.BulkGenerateVm
+@{
+    ViewData["Title"] = "Bulk generate locations";
+}
+<h2>Bulk generate locations (XY)</h2>
+
+<div class="alert alert-info">
+    Generates codes like: <code>Z1-X01-Y01</code> (and optional <code>-Z01</code>). Use type "Workstation" for production stations.
+</div>
+
+<form method="post" class="card p-3">
+    @Html.AntiForgeryToken()
+
+    <div class="row g-3">
+        <div class="col-md-2">
+            <label class="form-label">Zone</label>
+            <input class="form-control" asp-for="Zone" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Type</label>
+            <select class="form-select" asp-for="Type">
+                <option value="Shelf">Shelf</option>
+                <option value="Workstation">Workstation</option>
+                <option value="Reception">Reception</option>
+                <option value="Output">Output</option>
+                <option value="Quarantine">Quarantine</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Capacity (units)</label>
+            <input class="form-control" asp-for="CapacityUnits" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">X from</label>
+            <input class="form-control" asp-for="XFrom" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">X to</label>
+            <input class="form-control" asp-for="XTo" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Y from</label>
+            <input class="form-control" asp-for="YFrom" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Y to</label>
+            <input class="form-control" asp-for="YTo" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Z from (0=no Z)</label>
+            <input class="form-control" asp-for="ZFrom" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Z to</label>
+            <input class="form-control" asp-for="ZTo" />
+        </div>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@err.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    <div class="mt-3">
+        <button class="btn btn-primary btn-lg">Generate</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Back</a>
+    </div>
+</form>

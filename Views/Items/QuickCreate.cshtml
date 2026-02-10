@@ -1,0 +1,61 @@
+@model ManufacturingTimeTracking.Models.Inventory.Item
+@{
+    ViewData["Title"] = "Quick add";
+}
+<h2>Quick add (QR / RFID)</h2>
+
+<div class="alert alert-info">
+    Enter SKU, Name and a code (RFID EPC or QR). The system creates the item if it does not exist and attaches the tag. Optionally link to a process Material so the same product is used in inventory and production.
+</div>
+
+<form asp-action="QuickCreate" method="post" class="card p-3">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label class="form-label">SKU / Internal code</label>
+        <input name="sku" class="form-control" placeholder="e.g. BOLT-M6-20" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input name="name" class="form-control" placeholder="e.g. Bolt M6x20 stainless" />
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">RFID or QR code</label>
+            <input name="tagCode" class="form-control" placeholder="EPC or QR text" />
+            <div class="form-text">If using a keyboard-wedge scanner, place cursor here and scan.</div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Type</label>
+            <select name="tagType" class="form-select">
+                <option value="RFID">RFID</option>
+                <option value="QR">QR</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Units (pack)</label>
+            <input name="packQuantity" class="form-control" type="number" min="1" value="1" />
+            <div class="form-text">e.g. motor=1, box of bolts=100.</div>
+        </div>
+    </div>
+
+    <div class="mt-3 form-check">
+        <input class="form-check-input" type="checkbox" name="isSerialized" value="true" id="isSerialized" />
+        <label class="form-check-label" for="isSerialized">Serialized item (always 1 per tag)</label>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@err.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    <div class="mt-3">
+        <button class="btn btn-primary btn-lg">Save</button>
+        <a class="btn btn-outline-secondary" asp-action="CreateWithPhoto">Add with photo</a>
+    </div>
+</form>

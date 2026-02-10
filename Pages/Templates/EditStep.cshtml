@@ -1,0 +1,704 @@
+@page
+@model ManufacturingTimeTracking.Pages.Templates.EditStepModel
+@{
+    ViewData["Title"] = "Edit Step";
+}
+
+<h1>Edit Step</h1>
+
+<div class="mb-3">
+    <a asp-page="./Edit" asp-route-id="@Model.ProcessTemplate.Id" class="btn btn-secondary">Back to Template</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error:</strong> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Validation Errors:</strong>
+        <ul class="mb-0">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form method="post" id="stepForm">
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Step Details</h5>
+        </div>
+        <div class="card-body">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="StepEdit.Id" />
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label asp-for="StepEdit.Title" class="form-label">Title</label>
+                    <input asp-for="StepEdit.Title" class="form-control" required />
+                    <span asp-validation-for="StepEdit.Title" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label asp-for="StepEdit.Instructions" class="form-label">Instructions</label>
+                    <div class="btn-toolbar mb-2" role="toolbar" aria-label="Text formatting toolbar">
+                        <div class="btn-group me-2" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertLink()" title="Insert Link">
+                                🔗 Insert Link
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatList()" title="Create List">
+                                📋 List
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertLineBreak()" title="Line Break">
+                                ↵ Line Break
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="moveLineUp()" title="Move Line Up">
+                                ↑ Move Up
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="moveLineDown()" title="Move Line Down">
+                                ↓ Move Down
+                            </button>
+                        </div>
+                    </div>
+                    <textarea asp-for="StepEdit.Instructions" id="instructionsEditor" class="form-control" rows="10" style="white-space: pre-wrap;"></textarea>
+                    <small class="form-text text-muted">
+                        <strong>Tips:</strong> 
+                        - Press Enter twice for a new paragraph<br/>
+                        - Use the toolbar buttons to insert links, create lists, or add line breaks<br/>
+                        - Links format: [Link Text](URL) or just paste the URL
+                    </small>
+                    <span asp-validation-for="StepEdit.Instructions" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        @{
+                            var allowSkipName = Html.NameFor(m => m.StepEdit.AllowSkip);
+                        }
+                        <input type="hidden" name="@allowSkipName" value="false" />
+                        <input type="checkbox" name="@allowSkipName" value="true" id="@Html.IdFor(m => m.StepEdit.AllowSkip)" 
+                               class="form-check-input" @(Model.StepEdit.AllowSkip ? "checked" : "") />
+                        <label class="form-check-label" for="@Html.IdFor(m => m.StepEdit.AllowSkip)">Allow Skip</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tools Section -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Tools</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Select Tools</label>
+                <select asp-for="StepEdit.SelectedToolIds" asp-items="Model.AvailableTools" class="form-select" multiple size="5" data-val="false">
+                </select>
+                <small class="form-text text-muted">Hold Ctrl (Cmd on Mac) to select multiple tools.</small>
+            </div>
+            @if (Model.StepTools.Any())
+            {
+                <div class="mt-3">
+                    <strong>Current Tools:</strong>
+                    <ul>
+                        @foreach (var tool in Model.StepTools)
+                        {
+                            <li>@tool.Tool.Name</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Screws/Materials Section -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Screws / Materials</h5>
+        </div>
+        <div class="card-body">
+            <div id="materialsContainer">
+                @if (Model.StepMaterials.Any())
+                {
+                    @for (int i = 0; i < Model.StepMaterials.Count; i++)
+                    {
+                        <div class="row mb-2 material-row">
+                            <div class="col-md-5">
+                                <select name="StepEdit.SelectedMaterialIds[@i]" class="form-select material-select" 
+                                        onchange="updateMaterialImage(this, @i)">
+                                    <option value="">-- Select Material --</option>
+                                    @foreach (var material in Model.AvailableMaterials)
+                                    {
+                                        var materialObj = Model.AvailableMaterials.FirstOrDefault(m => m.Value == material.Value);
+                                        <option value="@material.Value" 
+                                                selected="@(material.Value == Model.StepMaterials[i].MaterialId.ToString())"
+                                                data-image="@(materialObj != null ? "" : "")">
+                                            @material.Text
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input name="StepEdit.MaterialQuantities[@i]" type="number" step="0.01" class="form-control" 
+                                       placeholder="Quantity" value="@Model.StepMaterials[i].Qty" />
+                            </div>
+                            <div class="col-md-2">
+                                @if (!string.IsNullOrEmpty(Model.StepMaterials[i].Material?.ImageUrl))
+                                {
+                                    <img src="~/uploads/@Model.StepMaterials[i].Material.ImageUrl" 
+                                         alt="@Model.StepMaterials[i].Material.Name" 
+                                         class="img-thumbnail material-image" 
+                                         style="max-height: 40px; max-width: 40px;" 
+                                         id="materialImage@i" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted small" id="materialImage@i">No image</span>
+                                }
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-sm btn-danger remove-material">Remove</button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <button type="button" id="addMaterialBtn" class="btn btn-sm btn-primary mt-2">Add Material</button>
+        </div>
+    </div>
+
+    <!-- Media Section -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Media (Images, PDFs, Videos)</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.StepMedia.Any())
+            {
+                <div class="row mb-3">
+                    @foreach (var stepMedia in Model.StepMedia)
+                    {
+                        <div class="col-md-3 mb-3 media-item" data-media-id="@stepMedia.Id">
+                            <div class="card">
+                                @if (stepMedia.Media.Type == "Image")
+                                {
+                                    <img src="~/uploads/@stepMedia.Media.UrlOrPath" class="card-img-top img-thumbnail" 
+                                         style="cursor: pointer; height: 150px; object-fit: cover;" 
+                                         onclick="openImageModal('@Url.Content($"~/uploads/{stepMedia.Media.UrlOrPath}")')" 
+                                         alt="@stepMedia.Caption" />
+                                }
+                                else if (stepMedia.Media.Type == "PDF")
+                                {
+                                    <div class="card-body text-center">
+                                        <div style="font-size: 3rem; color: red;">📄</div>
+                                        <p class="card-text">PDF Document</p>
+                                    </div>
+                                }
+                                else if (stepMedia.Media.Type == "Video")
+                                {
+                                    <div class="card-body text-center">
+                                        <div style="font-size: 3rem;">▶️</div>
+                                        <p class="card-text">Video</p>
+                                    </div>
+                                }
+                                <div class="card-body">
+                                    @if (!string.IsNullOrEmpty(stepMedia.Caption))
+                                    {
+                                        <p class="card-text small">@stepMedia.Caption</p>
+                                    }
+                                    <div class="btn-group btn-group-sm w-100">
+                                        @if (stepMedia.Media.Type == "PDF")
+                                        {
+                                            <a href="~/uploads/@stepMedia.Media.UrlOrPath" target="_blank" class="btn btn-primary">View</a>
+                                        }
+                                        <button type="button" class="btn btn-danger delete-media-btn" 
+                                                data-media-id="@stepMedia.Id"
+                                                onclick="deleteMedia(@stepMedia.Id)">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-body">
+                    <h6>Upload New Media</h6>
+                    <div class="mb-3">
+                        <label for="mediaFiles" class="form-label">Files (Image, PDF, or Video)</label>
+                        <input type="file" id="mediaFiles" name="MediaFiles" class="form-control" 
+                               accept="image/jpeg,image/jpg,image/png,image/gif,.pdf,video/mp4,video/avi,video/mov" 
+                               multiple />
+                        <small class="form-text text-muted">Supported: Images (JPEG, JPG, PNG, GIF), PDFs, Videos (MP4, AVI, MOV). You can select multiple files.</small>
+                    </div>
+                    <div id="mediaCaptionsContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a asp-page="./Edit" asp-route-id="@Model.ProcessTemplate.Id" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid" alt="Preview" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        // Image modal
+        function openImageModal(imageSrc) {
+            document.getElementById('modalImage').src = imageSrc;
+            var modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
+        }
+
+        // Material images map
+        var materialImages = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewData["MaterialImages"] ?? new Dictionary<string, string>()));
+
+        function updateMaterialImage(selectElement, index) {
+            var materialId = selectElement.value;
+            var imageContainer = document.getElementById('materialImage' + index);
+            if (imageContainer && materialId && materialImages[materialId]) {
+                imageContainer.innerHTML = '<img src="/uploads/' + materialImages[materialId] + '" class="img-thumbnail" style="max-height: 40px; max-width: 40px;" />';
+            } else if (imageContainer) {
+                imageContainer.innerHTML = '<span class="text-muted small">No image</span>';
+            }
+        }
+
+        // Add material row
+        document.getElementById('addMaterialBtn')?.addEventListener('click', function() {
+            var container = document.getElementById('materialsContainer');
+            var index = container.children.length;
+            var newRow = document.createElement('div');
+            newRow.className = 'row mb-2 material-row';
+            var materialsHtml = '';
+            @foreach (var material in Model.AvailableMaterials)
+            {
+                <text>materialsHtml += '<option value="@material.Value">@material.Text</option>';</text>
+            }
+            newRow.innerHTML = `
+                <div class="col-md-5">
+                    <select name="StepEdit.SelectedMaterialIds[${index}]" class="form-select material-select" 
+                            onchange="updateMaterialImage(this, ${index})">
+                        <option value="">-- Select Material --</option>
+                        ${materialsHtml}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input name="StepEdit.MaterialQuantities[${index}]" type="number" step="0.01" class="form-control" placeholder="Quantity" />
+                </div>
+                <div class="col-md-2">
+                    <span class="text-muted small" id="materialImage${index}">No image</span>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-danger remove-material">Remove</button>
+                </div>
+            `;
+            container.appendChild(newRow);
+        });
+
+        // Remove material row
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-material')) {
+                e.target.closest('.material-row').remove();
+            }
+        });
+
+        // Media management with AJAX
+        var stepId = @Model.StepTemplate.Id;
+        var mediaContainer = document.querySelector('.card-body .row.mb-3');
+        if (!mediaContainer) {
+            // Create media container if it doesn't exist
+            var mediaSection = document.querySelector('.card-body');
+            mediaContainer = document.createElement('div');
+            mediaContainer.className = 'row mb-3';
+            if (mediaSection) {
+                mediaSection.insertBefore(mediaContainer, mediaSection.querySelector('.card'));
+            }
+        }
+
+        // Handle media file selection and AJAX upload
+        var mediaFilesInput = document.getElementById('mediaFiles');
+        var mediaCaptionsContainer = document.getElementById('mediaCaptionsContainer');
+        var uploadProgressContainer = document.createElement('div');
+        uploadProgressContainer.id = 'uploadProgress';
+        uploadProgressContainer.className = 'mt-2';
+        
+        if (mediaFilesInput && mediaCaptionsContainer) {
+            mediaCaptionsContainer.parentNode.insertBefore(uploadProgressContainer, mediaCaptionsContainer.nextSibling);
+            
+            mediaFilesInput.addEventListener('change', function() {
+                var files = Array.from(this.files);
+                if (files.length === 0) return;
+
+                // Clear previous captions
+                mediaCaptionsContainer.innerHTML = '';
+                uploadProgressContainer.innerHTML = '';
+
+                // Create caption inputs and upload files
+                files.forEach(function(file, index) {
+                    // Create caption input
+                    var captionDiv = document.createElement('div');
+                    captionDiv.className = 'mb-2';
+                    captionDiv.innerHTML = `
+                        <label class="form-label small">Caption for ${file.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')} (Optional)</label>
+                        <div class="input-group">
+                            <input type="text" id="caption_${index}" class="form-control form-control-sm" placeholder="Enter caption..." />
+                            <button type="button" class="btn btn-sm btn-primary" onclick="uploadMediaFile(${index}, '${file.name.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">Upload</button>
+                        </div>
+                    `;
+                    mediaCaptionsContainer.appendChild(captionDiv);
+
+                    // Store file reference
+                    if (!window.pendingFiles) window.pendingFiles = {};
+                    window.pendingFiles[index] = file;
+                });
+            });
+        }
+
+        // Upload single media file via AJAX
+        window.uploadMediaFile = function(index, fileName) {
+            var file = window.pendingFiles && window.pendingFiles[index];
+            if (!file) {
+                alert('File not found. Please select files again.');
+                return;
+            }
+
+            var captionInput = document.getElementById('caption_' + index);
+            var caption = captionInput ? captionInput.value : '';
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('stepId', stepId);
+            formData.append('caption', caption);
+
+            // Show progress
+            var progressDiv = document.createElement('div');
+            progressDiv.id = 'progress_' + index;
+            progressDiv.className = 'alert alert-info';
+            progressDiv.innerHTML = `<small>Uploading ${fileName.replace(/</g, '&lt;').replace(/>/g, '&gt;')}... <span class="spinner-border spinner-border-sm" role="status"></span></small>`;
+            uploadProgressContainer.appendChild(progressDiv);
+
+            // Disable upload button
+            var uploadBtn = captionInput.parentNode.querySelector('button');
+            if (uploadBtn) uploadBtn.disabled = true;
+
+            fetch('?handler=UploadMedia', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    progressDiv.className = 'alert alert-success';
+                    progressDiv.innerHTML = `<small>✓ ${fileName.replace(/</g, '&lt;').replace(/>/g, '&gt;')} uploaded successfully!</small>`;
+                    
+                    // Add media to display
+                    addMediaToDisplay(data);
+                    
+                    // Remove caption input after a delay
+                    setTimeout(function() {
+                        var captionDiv = document.getElementById('caption_' + index)?.closest('.mb-2');
+                        if (captionDiv) captionDiv.remove();
+                        progressDiv.remove();
+                        delete window.pendingFiles[index];
+                        
+                        // Clear file input if all files uploaded
+                        if (!window.pendingFiles || Object.keys(window.pendingFiles).length === 0) {
+                            mediaFilesInput.value = '';
+                            uploadProgressContainer.innerHTML = '';
+                        }
+                    }, 2000);
+                } else {
+                    progressDiv.className = 'alert alert-danger';
+                    progressDiv.innerHTML = `<small>✗ Error: ${data.message || 'Upload failed'}</small>`;
+                    if (uploadBtn) uploadBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                progressDiv.className = 'alert alert-danger';
+                progressDiv.innerHTML = `<small>✗ Error uploading ${fileName.replace(/</g, '&lt;').replace(/>/g, '&gt;')}. Please try again.</small>`;
+                if (uploadBtn) uploadBtn.disabled = false;
+            });
+        };
+
+        // Add uploaded media to display
+        function addMediaToDisplay(data) {
+            var mediaItem = document.createElement('div');
+            mediaItem.className = 'col-md-3 mb-3 media-item';
+            mediaItem.setAttribute('data-media-id', data.stepMediaId);
+
+            var mediaType = data.mediaType;
+            var mediaContent = '';
+            var imageUrl = '/uploads/' + data.url;
+
+            if (mediaType === 'Image') {
+                mediaContent = `<img src="${imageUrl}" class="card-img-top img-thumbnail" 
+                                     style="cursor: pointer; height: 150px; object-fit: cover;" 
+                                     onclick="openImageModal('${imageUrl}')" 
+                                     alt="${(data.caption || '').replace(/"/g, '&quot;')}" />`;
+            } else if (mediaType === 'PDF') {
+                mediaContent = `<div class="card-body text-center">
+                                    <div style="font-size: 3rem; color: red;">📄</div>
+                                    <p class="card-text">PDF Document</p>
+                                </div>`;
+            } else if (mediaType === 'Video') {
+                mediaContent = `<div class="card-body text-center">
+                                    <div style="font-size: 3rem;">▶️</div>
+                                    <p class="card-text">Video</p>
+                                </div>`;
+            }
+
+            var captionHtml = data.caption ? `<p class="card-text small">${data.caption.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>` : '';
+            var viewBtn = mediaType === 'PDF' ? `<a href="${imageUrl}" target="_blank" class="btn btn-primary">View</a>` : '';
+
+            mediaItem.innerHTML = `
+                <div class="card">
+                    ${mediaContent}
+                    <div class="card-body">
+                        ${captionHtml}
+                        <div class="btn-group btn-group-sm w-100">
+                            ${viewBtn}
+                            <button type="button" class="btn btn-danger delete-media-btn" 
+                                    data-media-id="${data.stepMediaId}"
+                                    onclick="deleteMedia(${data.stepMediaId})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Ensure container exists
+            if (!mediaContainer) {
+                var mediaSection = document.querySelector('.card-body');
+                mediaContainer = document.createElement('div');
+                mediaContainer.className = 'row mb-3';
+                if (mediaSection) {
+                    var card = mediaSection.querySelector('.card');
+                    if (card) {
+                        mediaSection.insertBefore(mediaContainer, card);
+                    } else {
+                        mediaSection.appendChild(mediaContainer);
+                    }
+                }
+            }
+
+            mediaContainer.appendChild(mediaItem);
+        }
+
+        // Handle media deletion via AJAX
+        window.deleteMedia = function(mediaId) {
+            if (!confirm('Are you sure you want to delete this media?')) {
+                return;
+            }
+
+            var mediaItem = document.querySelector(`[data-media-id="${mediaId}"]`);
+            if (!mediaItem) return;
+
+            // Show loading state
+            var deleteBtn = mediaItem.querySelector('.delete-media-btn');
+            if (deleteBtn) {
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = 'Deleting...';
+            }
+
+            var formData = new FormData();
+            formData.append('stepMediaId', mediaId);
+
+            fetch('?handler=DeleteMedia', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove from DOM with fade effect
+                    mediaItem.style.transition = 'opacity 0.3s';
+                    mediaItem.style.opacity = '0';
+                    setTimeout(function() {
+                        mediaItem.remove();
+                    }, 300);
+                } else {
+                    alert('Error deleting media: ' + (data.message || 'Unknown error'));
+                    if (deleteBtn) {
+                        deleteBtn.disabled = false;
+                        deleteBtn.innerHTML = 'Delete';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Delete error:', error);
+                alert('Error deleting media. Please try again.');
+                if (deleteBtn) {
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = 'Delete';
+                }
+            });
+        };
+
+        // Enhanced textarea for instructions with better line break handling
+        var editor = document.getElementById('instructionsEditor');
+        if (editor) {
+            editor.style.whiteSpace = 'pre-wrap';
+            
+            // Function to insert text at cursor position
+            function insertTextAtCursor(text) {
+                var start = editor.selectionStart;
+                var end = editor.selectionEnd;
+                var selectedText = editor.value.substring(start, end);
+                var newText = editor.value.substring(0, start) + text + editor.value.substring(end);
+                editor.value = newText;
+                editor.selectionStart = editor.selectionEnd = start + text.length;
+                editor.focus();
+            }
+
+            // Insert link
+            window.insertLink = function() {
+                var url = prompt('Enter URL:', 'https://');
+                if (url) {
+                    var linkText = prompt('Enter link text (or leave empty to use URL):', '');
+                    var link = linkText ? `[${linkText}](${url})` : url;
+                    insertTextAtCursor(link);
+                }
+            };
+
+            // Format as list
+            window.formatList = function() {
+                var selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+                if (selectedText) {
+                    var lines = selectedText.split('\n').filter(line => line.trim());
+                    var listItems = lines.map(line => '- ' + line.trim()).join('\n');
+                    insertTextAtCursor(listItems);
+                } else {
+                    insertTextAtCursor('- ');
+                }
+            };
+
+            // Insert line break
+            window.insertLineBreak = function() {
+                insertTextAtCursor('\n');
+            };
+
+            // Move current line up
+            window.moveLineUp = function() {
+                var start = editor.selectionStart;
+                var end = editor.selectionEnd;
+                var text = editor.value;
+                
+                // Find the start of current line
+                var lineStart = text.lastIndexOf('\n', start - 1) + 1;
+                // Find the end of current line
+                var lineEnd = text.indexOf('\n', start);
+                if (lineEnd === -1) lineEnd = text.length;
+                
+                // Find the start of previous line
+                var prevLineStart = text.lastIndexOf('\n', lineStart - 2) + 1;
+                
+                if (prevLineStart < lineStart) {
+                    var currentLine = text.substring(lineStart, lineEnd);
+                    var prevLine = text.substring(prevLineStart, lineStart - 1);
+                    var before = text.substring(0, prevLineStart);
+                    var after = text.substring(lineEnd);
+                    
+                    editor.value = before + currentLine + '\n' + prevLine + after;
+                    editor.selectionStart = prevLineStart;
+                    editor.selectionEnd = prevLineStart + currentLine.length;
+                    editor.focus();
+                }
+            };
+
+            // Move current line down
+            window.moveLineDown = function() {
+                var start = editor.selectionStart;
+                var end = editor.selectionEnd;
+                var text = editor.value;
+                
+                // Find the start of current line
+                var lineStart = text.lastIndexOf('\n', start - 1) + 1;
+                // Find the end of current line
+                var lineEnd = text.indexOf('\n', start);
+                if (lineEnd === -1) lineEnd = text.length;
+                
+                // Find the start of next line
+                var nextLineStart = lineEnd + 1;
+                var nextLineEnd = text.indexOf('\n', nextLineStart);
+                if (nextLineEnd === -1) nextLineEnd = text.length;
+                
+                if (nextLineStart <= text.length) {
+                    var currentLine = text.substring(lineStart, lineEnd);
+                    var nextLine = text.substring(nextLineStart, nextLineEnd);
+                    var before = text.substring(0, lineStart);
+                    var after = text.substring(nextLineEnd);
+                    
+                    editor.value = before + nextLine + '\n' + currentLine + after;
+                    editor.selectionStart = lineStart + nextLine.length + 1;
+                    editor.selectionEnd = editor.selectionStart + currentLine.length;
+                    editor.focus();
+                }
+            };
+
+            // Auto-format URLs as links
+            editor.addEventListener('paste', function(e) {
+                setTimeout(function() {
+                    var text = editor.value;
+                    // Simple URL detection and formatting
+                    var urlRegex = /(https?:\/\/[^\s]+)/g;
+                    editor.value = text.replace(urlRegex, function(url) {
+                        // Only format if not already formatted as markdown link
+                        if (!text.includes('[') || !text.includes('](')) {
+                            return '[' + url + '](' + url + ')';
+                        }
+                        return url;
+                    });
+                }, 10);
+            });
+        }
+    </script>
+}

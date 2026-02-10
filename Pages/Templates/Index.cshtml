@@ -1,0 +1,57 @@
+@page
+@model ManufacturingTimeTracking.Pages.Templates.IndexModel
+@{
+    ViewData["Title"] = "Process Templates";
+}
+
+<h1>Process Templates</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New Template</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Model</th>
+            <th>Name</th>
+            <th>Variant (code)</th>
+            <th>Phases</th>
+            <th>Steps</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var template in Model.ProcessTemplates)
+        {
+            <tr>
+                <td>@template.MachineModelId</td>
+                <td>@(Model.MachineModelNames.ContainsKey(template.MachineModelId) ? Model.MachineModelNames[template.MachineModelId] : $"ID: {template.MachineModelId}")</td>
+                <td>
+                    @if (Model.MachineVariants.ContainsKey(template.MachineVariantId))
+                    {
+                        var variant = Model.MachineVariants[template.MachineVariantId];
+                        if (!string.IsNullOrEmpty(variant.Code))
+                        {
+                            <text>@variant.Name (<span style="color: red;">@variant.Code</span>)</text>
+                        }
+                        else
+                        {
+                            <text>@variant.Name</text>
+                        }
+                    }
+                    else
+                    {
+                        <text>ID: @template.MachineVariantId</text>
+                    }
+                </td>
+                <td>@template.Phases.Count</td>
+                <td>@template.Phases.Sum(p => p.Steps.Count)</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@template.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@template.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

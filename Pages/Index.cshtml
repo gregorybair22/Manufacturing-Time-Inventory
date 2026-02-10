@@ -1,0 +1,68 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Manufacturing Time Tracking - Dashboard</h1>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Orders</h5>
+                <h2 class="text-primary">@Model.TotalOrders</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Active Orders</h5>
+                <h2 class="text-warning">@Model.ActiveOrders</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Templates</h5>
+                <h2 class="text-info">@Model.TotalTemplates</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Machine Models</h5>
+                <h2 class="text-success">@Model.TotalModels</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a asp-page="/Orders/Create" class="btn btn-primary mb-2">Create New Order</a><br />
+                <a asp-page="/Templates/Create" class="btn btn-secondary mb-2">Create New Template</a><br />
+                <a asp-page="/Catalog/Models/Index" class="btn btn-secondary mb-2">Manage Models</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Navigation</h5>
+            </div>
+            <div class="card-body">
+                <a asp-page="/Orders/Index" class="btn btn-outline-primary mb-2">View All Orders</a><br />
+                <a asp-page="/Templates/Index" class="btn btn-outline-secondary mb-2">View All Templates</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+@model IEnumerable<ManufacturingTimeTracking.Models.Inventory.Location>
+@{
+    ViewData["Title"] = "Locations";
+    var zones = (IEnumerable<string>)(ViewBag.Zones ?? new List<string>());
+    var zone = (string)(ViewBag.Zone ?? "");
+    var msg = TempData["Msg"] as string;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Locations (XY)</h2>
+    <div>
+        <a class="btn btn-outline-primary" asp-action="BulkGenerate">Bulk generate</a>
+        <a class="btn btn-primary" asp-action="Create">New</a>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-success">@msg</div>
+}
+
+<form method="get" class="mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label">Zone</label>
+            <select class="form-select" name="zone">
+                <option value="">(all)</option>
+                @foreach (var z in zones)
+                {
+                    <option value="@z" selected="@(z == zone)">@z</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-outline-secondary w-100">Filter</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Zone</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+            <th>Type</th>
+            <th>Cap.</th>
+            <th>Blocked</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var l in Model)
+    {
+        <tr>
+            <td><code>@l.Code</code></td>
+            <td>@l.Zone</td>
+            <td>@l.X</td>
+            <td>@l.Y</td>
+            <td>@(l.Z?.ToString() ?? "-")</td>
+            <td>@l.Type</td>
+            <td>@l.CapacityUnits</td>
+            <td>@(l.IsBlocked ? "Yes" : "No")</td>
+            <td>
+                <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@l.Id">Details</a>
+                <a class="btn btn-sm btn-primary" asp-action="PrintLabel" asp-route-id="@l.Id" target="_blank">QR</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="alert alert-info">
+    Tip: print the QR for each location and stick it on the shelf. For putaway, the operator scans the location and the item tag. Use type "Workstation" for production stations so items can be moved from warehouse to production.
+</div>

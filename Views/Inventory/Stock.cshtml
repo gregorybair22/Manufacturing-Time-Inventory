@@ -1,0 +1,29 @@
+@model IEnumerable<ManufacturingTimeTracking.Models.Inventory.StockSnapshot>
+@{
+    ViewData["Title"] = "Stock";
+}
+<h2>Stock (snapshot)</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Item</th>
+            <th>Location</th>
+            <th>Quantity</th>
+            <th>Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var s in Model)
+    {
+        <tr>
+            <td>@s.Item?.Sku</td>
+            <td>@s.Item?.Name</td>
+            <td>@s.Location?.Code</td>
+            <td>@s.Quantity</td>
+            <td>@s.UpdatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,65 @@
+@model ManufacturingTimeTracking.Models.Inventory.Location
+@{
+    ViewData["Title"] = "Edit location";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Edit location: @Model.Code</h2>
+    <div>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this location?')">
+            @Html.AntiForgeryToken()
+            <button class="btn btn-outline-danger">Delete</button>
+        </form>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</div>
+
+<form asp-action="Edit" method="post" class="card p-4">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Zone</label>
+            <input asp-for="Zone" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">X</label>
+            <input asp-for="X" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Y</label>
+            <input asp-for="Y" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Z</label>
+            <input asp-for="Z" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Type</label>
+            <select asp-for="Type" class="form-select">
+                <option value="Shelf">Shelf</option>
+                <option value="Workstation">Workstation</option>
+                <option value="Reception">Reception</option>
+                <option value="Output">Output</option>
+                <option value="Quarantine">Quarantine</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Capacity</label>
+            <input asp-for="CapacityUnits" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Blocked</label>
+            <select asp-for="IsBlocked" class="form-select">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button class="btn btn-primary">Save changes</button>
+    </div>
+</form>

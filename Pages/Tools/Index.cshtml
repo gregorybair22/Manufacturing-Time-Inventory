@@ -1,0 +1,32 @@
+@page
+@model ManufacturingTimeTracking.Pages.Tools.IndexModel
+@{
+    ViewData["Title"] = "Tools";
+}
+
+<h1>Tools</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New Tool</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tool in Model.Tools)
+        {
+            <tr>
+                <td>@tool.Name</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@tool.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@tool.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

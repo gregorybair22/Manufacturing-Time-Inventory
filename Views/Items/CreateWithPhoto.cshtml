@@ -1,0 +1,99 @@
+@model ManufacturingTimeTracking.Models.Inventory.Item
+@{
+    ViewData["Title"] = "Add with photo";
+}
+<h2>Add with photo</h2>
+
+<div class="alert alert-info">
+    Take a photo or select an image. The system will extract the text (OCR) and identify the object type (e.g. Motor, Box) automatically.
+</div>
+
+<form id="createWithPhotoForm" asp-action="CreateWithPhoto" method="post" enctype="multipart/form-data" class="card p-3">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label class="form-label">Photo</label>
+        <div class="d-flex flex-wrap gap-2 mb-2">
+            <button type="button" id="startCameraBtn" class="btn btn-outline-primary">Open camera</button>
+            <button type="button" id="captureBtn" class="btn btn-primary d-none">Capture photo</button>
+            <button type="button" id="stopCameraBtn" class="btn btn-outline-secondary d-none">Close camera</button>
+        </div>
+        <div id="cameraContainer" class="mb-2 position-relative" style="max-width: 100%; display: none;">
+            <video id="cameraVideo" autoplay playsinline muted class="rounded border" style="max-width: 100%; max-height: 320px; background: #000;"></video>
+            <div id="cameraError" class="alert alert-warning mt-2 d-none"></div>
+        </div>
+        <div class="mt-2">
+            <label class="form-label small text-muted">Or choose a file</label>
+            <input type="file" id="photo" name="photo" accept="image/*" class="form-control" />
+        </div>
+        <div class="form-text" id="ocrStatus">OCR pending</div>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="overwrite" checked />
+        <label class="form-check-label" for="overwrite">Overwrite Name/SKU with recognized text</label>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">SKU</label>
+        <input id="sku" name="sku" value="@Model.Sku" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input id="name" name="name" value="@Model.Name" class="form-control" placeholder="e.g. Motor, Box (filled from photo)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">OCR text</label>
+        <textarea id="ocrText" name="ocrText" rows="4" class="form-control" placeholder="Extracted text from image"></textarea>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="applyOcr" name="applyOcr" value="true" />
+        <label class="form-check-label" for="applyOcr">Apply OCR when saving</label>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-md-4">
+            <label class="form-label">Tag code</label>
+            <input name="tagCode" class="form-control" placeholder="Leave empty to auto-generate QR" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Tag type</label>
+            <select name="tagType" class="form-select">
+                <option value="RFID">RFID</option>
+                <option value="QR">QR</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Pack qty</label>
+            <input name="packQuantity" type="number" min="1" value="1" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Serialized</label>
+            <select name="isSerialized" class="form-select">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+        </div>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@err.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    <button id="submitBtn" type="submit" class="btn btn-primary">Create</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back</a>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+    <script src="~/js/ocr-item.js" asp-append-version="true"></script>
+}

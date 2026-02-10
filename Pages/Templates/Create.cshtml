@@ -1,0 +1,85 @@
+@page
+@model ManufacturingTimeTracking.Pages.Templates.CreateModel
+@{
+    ViewData["Title"] = "Create Template";
+}
+
+<h1>Create Process Template</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProcessTemplate.MachineModelId" class="control-label">Machine Model</label>
+                <select asp-for="ProcessTemplate.MachineModelId" class="form-control" asp-items="Model.MachineModels">
+                    <option value="">-- Select Model --</option>
+                </select>
+                <span asp-validation-for="ProcessTemplate.MachineModelId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProcessTemplate.MachineVariantId" class="control-label">Machine Variant</label>
+                <select asp-for="ProcessTemplate.MachineVariantId" class="form-control">
+                    <option value="">-- Select Variant --</option>
+                </select>
+                <span asp-validation-for="ProcessTemplate.MachineVariantId" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <label class="control-label">Copy from Existing Template (Optional)</label>
+                <select id="copyTemplateId" class="form-control">
+                    <option value="">-- Select Template to Copy From --</option>
+                </select>
+                <small class="form-text text-muted">Select an existing template to copy its phases and steps</small>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+            <input type="hidden" id="copyFromTemplateId" name="copyFromTemplateId" />
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('ProcessTemplate_MachineModelId').addEventListener('change', function() {
+            var modelId = this.value;
+            var variantSelect = document.getElementById('ProcessTemplate_MachineVariantId');
+            variantSelect.innerHTML = '<option value="">-- Select Variant --</option>';
+            
+            if (modelId) {
+                fetch('/api/variants?modelId=' + modelId)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(variant => {
+                            var option = document.createElement('option');
+                            option.value = variant.id;
+                            option.textContent = variant.name + ' (' + variant.code + ')';
+                            variantSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
+
+        // Populate templates dropdown (machine model names e.g. D600, S600 - variant)
+        var copyTemplateSelect = document.getElementById('copyTemplateId');
+        @if (Model.AvailableTemplates != null)
+        {
+            @foreach (var template in Model.AvailableTemplates)
+            {
+                <text>
+                var option = document.createElement('option');
+                option.value = '@template.Value';
+                option.textContent = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(template.Text));
+                copyTemplateSelect.appendChild(option);
+                </text>
+            }
+        }
+
+        copyTemplateSelect.addEventListener('change', function() {
+            document.getElementById('copyFromTemplateId').value = this.value;
+        });
+    </script>
+}
