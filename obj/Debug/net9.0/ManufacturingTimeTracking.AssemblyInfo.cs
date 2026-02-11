@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ManufacturingTimeTracking")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e524b950877e77540567b72ee293ede81e3c512")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4fe668ff1fe967077cbd6851067faa2f28fe3bf4")]
 [assembly: System.Reflection.AssemblyProductAttribute("ManufacturingTimeTracking")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ManufacturingTimeTracking")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
