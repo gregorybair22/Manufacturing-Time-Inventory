@@ -78,6 +78,7 @@
                         {
                             var isPicked = line.QuantityPicked >= line.QuantityNeeded;
                             var shortSupply = line.TotalAvailable < line.QuantityNeeded;
+                            var hasAlternatives = line.Alternatives.Any();
                             <tr class="table-row-hover transition-colors @(shortSupply && !isPicked ? "bg-amber-50/50" : "") @(isPicked ? "bg-emerald-50/50" : "")">
                                 <td class="px-6 py-4">
                                     @if (isPicked)
@@ -89,7 +90,13 @@
                                         <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">@line.QuantityPicked / @line.QuantityNeeded</span>
                                     }
                                 </td>
-                                <td class="px-6 py-4 font-medium text-slate-800">@line.Sku</td>
+                                <td class="px-6 py-4 font-medium text-slate-800">
+                                    @line.Sku
+                                    @if (hasAlternatives)
+                                    {
+                                        <span class="text-xs text-slate-500 font-normal">(or alternatives)</span>
+                                    }
+                                </td>
                                 <td class="px-6 py-4 text-slate-600">@line.Name</td>
                                 <td class="px-6 py-4 text-slate-600">@(string.IsNullOrWhiteSpace(line.ModelOrType) ? "—" : line.ModelOrType)</td>
                                 <td class="px-6 py-4 text-slate-600">@line.QuantityNeeded</td>
@@ -111,7 +118,29 @@
                                             }
                                         </ul>
                                     }
-                                    else
+                                    @if (hasAlternatives)
+                                    {
+                                        @foreach (var alt in line.Alternatives)
+                                        {
+                                            <div class="mt-2 pt-2 border-t border-slate-200">
+                                                <div class="text-xs text-slate-500 mb-1">OR <strong class="text-slate-700">@alt.Sku</strong> (@alt.Name)</div>
+                                                @if (alt.Locations.Any())
+                                                {
+                                                    <ul class="list-none space-y-0.5 ml-4">
+                                                        @foreach (var loc in alt.Locations)
+                                                        {
+                                                            <li class="text-xs"><strong>@loc.Code</strong> @(string.IsNullOrEmpty(loc.Zone) ? "" : $"({loc.Zone})") — @loc.Quantity</li>
+                                                        }
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-xs text-slate-400 ml-4">No stock</span>
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                    @if (!line.Locations.Any() && !hasAlternatives)
                                     {
                                         <span class="text-slate-400">No stock</span>
                                     }

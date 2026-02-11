@@ -1,6 +1,7 @@
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\js\ocr-item.js
+wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
@@ -67,12 +68,18 @@ wwwroot\uploads\inventory\092c362c-b224-437b-995b-856c0876bb76.jpeg
 wwwroot\uploads\inventory\109454a5-eb72-4d5d-b85d-89d63d674d9b.jpeg
 wwwroot\uploads\inventory\52629e19-241f-4a6a-8f59-bee9d58750d0.jpeg
 wwwroot\uploads\inventory\9e366744-7262-47a1-96b0-08d4be6ad0c8.jpeg
+wwwroot\uploads\materials\4860d191-b39e-441f-9b96-688ca31199d8.png
+wwwroot\uploads\materials\6b7c6854-906f-44d1-8225-92b155e89616.png
+wwwroot\uploads\materials\94e59983-d724-440b-9e99-2bddb0aff324.png
 wwwroot\uploads\materials\ab00470f-5ea5-49e3-86b4-262d805e0bdc.png
+wwwroot\uploads\materials\b692269b-f12e-4053-985c-c9c01e51fed4.png
+wwwroot\uploads\materials\d86e55f1-8266-4df8-b452-ce506c4a9ad7.png
+wwwroot\uploads\materials\e56bf9f8-5928-4731-9248-97ca79cb4b9e.png
 wwwroot\uploads\templates\1\36\a3558d7e-14db-4439-8e01-723f85da3fa0.png
-wwwroot\js\site.js
 D:\Manufacturing-Time-Inventory\wwwroot\css\site.css
 D:\Manufacturing-Time-Inventory\wwwroot\favicon.ico
 D:\Manufacturing-Time-Inventory\wwwroot\js\ocr-item.js
+D:\Manufacturing-Time-Inventory\wwwroot\js\site.js
 D:\Manufacturing-Time-Inventory\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 D:\Manufacturing-Time-Inventory\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 D:\Manufacturing-Time-Inventory\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
@@ -132,4 +139,3 @@ D:\Manufacturing-Time-Inventory\wwwroot\lib\jquery\dist\jquery.slim.js
 D:\Manufacturing-Time-Inventory\wwwroot\lib\jquery\dist\jquery.slim.min.js
 D:\Manufacturing-Time-Inventory\wwwroot\lib\jquery\dist\jquery.slim.min.map
 D:\Manufacturing-Time-Inventory\wwwroot\lib\jquery\LICENSE.txt
-D:\Manufacturing-Time-Inventory\wwwroot\js\site.js

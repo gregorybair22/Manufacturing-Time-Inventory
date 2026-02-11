@@ -43,6 +43,9 @@ public class DetailsModel : PageModel
             .Include(m => m.Variants)
             .Include(m => m.Components)
                 .ThenInclude(c => c.Item)
+            .Include(m => m.Components)
+                .ThenInclude(c => c.Alternatives)
+                    .ThenInclude(a => a.Item)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (machineModel == null)
@@ -191,6 +194,54 @@ public class DetailsModel : PageModel
         if (comp != null)
         {
             _context.MachineModelComponents.Remove(comp);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToPage("./Details", new { id = modelId });
+    }
+
+    public async Task<IActionResult> OnPostAddAlternativeAsync(int componentId, int modelId, int itemId)
+    {
+        if (itemId <= 0)
+        {
+            TempData["Error"] = "Select an item.";
+            return RedirectToPage("./Details", new { id = modelId });
+        }
+
+        var component = await _context.MachineModelComponents
+            .Include(c => c.Alternatives)
+            .FirstOrDefaultAsync(c => c.Id == componentId);
+        
+        if (component == null)
+        {
+            TempData["Error"] = "Component not found.";
+            return RedirectToPage("./Details", new { id = modelId });
+        }
+
+        // Check if item is already the primary item or already an alternative
+        if (component.ItemId == itemId || component.Alternatives.Any(a => a.ItemId == itemId))
+        {
+            TempData["Error"] = "This item is already the primary item or already added as an alternative.";
+            return RedirectToPage("./Details", new { id = modelId });
+        }
+
+        var maxSort = component.Alternatives.Any() ? component.Alternatives.Max(a => a.SortOrder) : -1;
+        _context.MachineModelComponentAlternatives.Add(new MachineModelComponentAlternative
+        {
+            ComponentId = componentId,
+            ItemId = itemId,
+            SortOrder = maxSort + 1
+        });
+        await _context.SaveChangesAsync();
+        TempData["Success"] = "Alternative added successfully.";
+        return RedirectToPage("./Details", new { id = modelId });
+    }
+
+    public async Task<IActionResult> OnPostDeleteAlternativeAsync(int alternativeId, int modelId)
+    {
+        var alt = await _context.MachineModelComponentAlternatives.FindAsync(alternativeId);
+        if (alt != null)
+        {
+            _context.MachineModelComponentAlternatives.Remove(alt);
             await _context.SaveChangesAsync();
         }
         return RedirectToPage("./Details", new { id = modelId });

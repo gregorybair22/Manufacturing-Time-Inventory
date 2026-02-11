@@ -63,7 +63,7 @@
                             <td class="px-6 py-4"><span class="inline-flex px-2 py-0.5 rounded text-xs font-medium @(l.IsBlocked ? "bg-red-100 text-red-800" : "bg-slate-100 text-slate-600")">@(l.IsBlocked ? "Yes" : "No")</span></td>
                             <td class="px-6 py-4 text-right">
                                 <a class="inline-flex items-center px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 mr-2" asp-action="Details" asp-route-id="@l.Id">Details</a>
-                                <a class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700" asp-action="PrintLabel" asp-route-id="@l.Id" target="_blank">QR</a>
+                                <button type="button" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700" data-bs-toggle="modal" data-bs-target="#locationQrModal" data-qr-url="@Url.Action("Qr", "Locations", new { id = l.Id })">QR</button>
                             </td>
                         </tr>
                     }
@@ -76,3 +76,32 @@
         Tip: print the QR for each location and stick it on the shelf. For putaway, the operator scans the location and the item tag. Use type "Workstation" for production stations so items can be moved from warehouse to production.
     </div>
 </div>
+
+<!-- QR code modal -->
+<div class="modal fade" id="locationQrModal" tabindex="-1" aria-labelledby="locationQrModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="locationQrModalTitle">Location QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <img id="locationQrImage" src="" alt="QR Code" class="mx-auto" style="max-width: 100%;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('locationQrModal')?.addEventListener('show.bs.modal', function (e) {
+        var url = e.relatedTarget?.getAttribute('data-qr-url');
+        var img = document.getElementById('locationQrImage');
+        if (url && img) img.src = url;
+    });
+    document.getElementById('locationQrModal')?.addEventListener('hidden.bs.modal', function () {
+        var img = document.getElementById('locationQrImage');
+        if (img) img.src = '';
+    });
+</script>
+}

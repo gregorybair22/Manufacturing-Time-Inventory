@@ -2,11 +2,11 @@
 @{
     ViewData["Title"] = "Details";
 }
-<div class="animate-fade-in max-w-4xl">
+<div class="animate-fade-in w-full">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h1 class="text-2xl font-bold text-slate-800">@Model.Sku — @Model.Name</h1>
         <div class="flex gap-2">
-            <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" target="_blank" class="px-4 py-2 rounded-xl border border-emerald-600 text-emerald-600 font-medium hover:bg-emerald-50 transition-all duration-200">Print label</a>
+            <button type="button" class="px-4 py-2 rounded-xl border border-emerald-600 text-emerald-600 font-medium hover:bg-emerald-50 transition-all duration-200" data-bs-toggle="modal" data-bs-target="#printLabelModal" data-print-label-url="@Url.Action("PrintLabel", "Items", new { itemId = Model.Id })">Print label</button>
             <a asp-action="Edit" asp-route-id="@Model.Id" class="px-4 py-2 rounded-xl border border-blue-600 text-blue-600 font-medium hover:bg-blue-50 transition-all duration-200">Edit</a>
         </div>
     </div>
@@ -52,10 +52,10 @@
                             <td class="px-6 py-4"><code class="px-2 py-1 rounded bg-slate-100 text-slate-700 text-sm">@t.Code</code></td>
                             <td class="px-6 py-4 text-slate-600">@t.PackQuantity</td>
                             <td class="px-6 py-4 text-right">
-                                <a asp-action="PrintLabel" asp-route-itemId="@Model.Id" asp-route-tagId="@t.Id" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-emerald-600 text-emerald-600 text-sm font-medium hover:bg-emerald-50 mr-2">Print label</a>
+                                <button type="button" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-emerald-600 text-emerald-600 text-sm font-medium hover:bg-emerald-50 mr-2" data-bs-toggle="modal" data-bs-target="#printLabelModal" data-print-label-url="@Url.Action("PrintLabel", "Items", new { itemId = Model.Id, tagId = t.Id })">Print label</button>
                                 @if (t.TagType == "QR")
                                 {
-                                    <a href="@Url.Action("ItemQr", new { code = t.Code })" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50">View QR</a>
+                                    <button type="button" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50" data-bs-toggle="modal" data-bs-target="#viewQrModal" data-qr-url="@Url.Action("ItemQr", "Items", new { code = t.Code })">View QR</button>
                                 }
                             </td>
                         </tr>
@@ -65,3 +65,56 @@
         </div>
     </div>
 </div>
+
+<!-- Print label modal: iframe loads the print label page -->
+<div class="modal fade" id="printLabelModal" tabindex="-1" aria-labelledby="printLabelModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="printLabelModalTitle">Print label</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <iframe id="printLabelFrame" style="width:100%; height:70vh; border:0;" title="Print label"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View QR modal: shows QR image -->
+<div class="modal fade" id="viewQrModal" tabindex="-1" aria-labelledby="viewQrModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewQrModalTitle">QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <img id="viewQrImage" src="" alt="QR Code" class="mx-auto" style="max-width: 100%;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('printLabelModal')?.addEventListener('show.bs.modal', function (e) {
+        var url = e.relatedTarget?.getAttribute('data-print-label-url');
+        var frame = document.getElementById('printLabelFrame');
+        if (url && frame) frame.src = url;
+    });
+    document.getElementById('printLabelModal')?.addEventListener('hidden.bs.modal', function () {
+        var frame = document.getElementById('printLabelFrame');
+        if (frame) frame.src = '';
+    });
+    document.getElementById('viewQrModal')?.addEventListener('show.bs.modal', function (e) {
+        var url = e.relatedTarget?.getAttribute('data-qr-url');
+        var img = document.getElementById('viewQrImage');
+        if (url && img) img.src = url;
+    });
+    document.getElementById('viewQrModal')?.addEventListener('hidden.bs.modal', function () {
+        var img = document.getElementById('viewQrImage');
+        if (img) img.src = '';
+    });
+</script>
+}
