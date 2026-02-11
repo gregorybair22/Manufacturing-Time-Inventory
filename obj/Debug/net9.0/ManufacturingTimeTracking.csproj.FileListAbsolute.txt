@@ -583,4 +583,4 @@ D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\ref\ManufacturingTimeTracking.d
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\qp9mb2irji-ec63ncc0xs.gz
 D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\o0kyreauot-607x0pg4bs.gz
-D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\pblnqhg6i0-13978rh1g2.gz
+D:\Manufacturing-Time-Inventory\obj\Debug\net9.0\compressed\pblnqhg6i0-luhpnm6qp7.gz

@@ -123,6 +123,18 @@ CREATE TABLE [dbo].[MachineModelComponents] (
 );
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_MachineModelComponents_MachineModelId' AND object_id = OBJECT_ID(N'[dbo].[MachineModelComponents]'))
 CREATE INDEX [IX_MachineModelComponents_MachineModelId] ON [dbo].[MachineModelComponents] ([MachineModelId]);",
+            @"IF OBJECT_ID(N'[dbo].[MachineModelComponentAlternatives]', N'U') IS NULL
+CREATE TABLE [dbo].[MachineModelComponentAlternatives] (
+    [Id] int NOT NULL IDENTITY,
+    [ComponentId] int NOT NULL,
+    [ItemId] int NOT NULL,
+    [SortOrder] int NOT NULL DEFAULT 0,
+    CONSTRAINT [PK_MachineModelComponentAlternatives] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_MachineModelComponentAlternatives_MachineModelComponents_ComponentId] FOREIGN KEY ([ComponentId]) REFERENCES [dbo].[MachineModelComponents] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_MachineModelComponentAlternatives_Items_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([Id]) ON DELETE NO ACTION
+);
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_MachineModelComponentAlternatives_ComponentId' AND object_id = OBJECT_ID(N'[dbo].[MachineModelComponentAlternatives]'))
+CREATE INDEX [IX_MachineModelComponentAlternatives_ComponentId] ON [dbo].[MachineModelComponentAlternatives] ([ComponentId]);",
             @"IF OBJECT_ID(N'[dbo].[OrderPickLines]', N'U') IS NULL
 CREATE TABLE [dbo].[OrderPickLines] (
     [Id] int NOT NULL IDENTITY,

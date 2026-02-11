@@ -19,6 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<MachineModel> MachineModels { get; set; }
     public DbSet<MachineVariant> MachineVariants { get; set; }
     public DbSet<MachineModelComponent> MachineModelComponents { get; set; }
+    public DbSet<MachineModelComponentAlternative> MachineModelComponentAlternatives { get; set; }
     public DbSet<Workstation> Workstations { get; set; }
 
     // Templates
@@ -72,6 +73,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(c => c.Item)
             .WithMany()
             .HasForeignKey(c => c.ItemId)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<MachineModelComponent>()
+            .HasMany(c => c.Alternatives)
+            .WithOne(a => a.Component)
+            .HasForeignKey(a => a.ComponentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<MachineModelComponentAlternative>()
+            .HasOne(a => a.Item)
+            .WithMany()
+            .HasForeignKey(a => a.ItemId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<OrderPickLine>()

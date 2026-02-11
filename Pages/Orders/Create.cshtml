@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create Build Order";
 }
 
-<div class="animate-fade-in max-w-2xl">
+<div class="animate-fade-in w-full">
     <h1 class="text-2xl font-bold text-slate-800 mb-2">Create Build Order</h1>
     <p class="text-slate-500 mb-6">Enter order details and select machine model and variant.</p>
 
@@ -36,8 +36,10 @@
                 <span asp-validation-for="BuildOrder.MachineVariantId" class="text-red-600 text-sm mt-1 block"></span>
             </div>
             <div class="flex gap-3 pt-2">
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">Create</button>
-                <a asp-page="Index" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all duration-200">Cancel</a>
+            <div class="m-auto">
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">Create</button>
+                    <a asp-page="Index" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all duration-200">Cancel</a>
+                </div>
             </div>
         </form>
     </div>

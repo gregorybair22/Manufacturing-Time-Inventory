@@ -4,6 +4,7 @@ using ManufacturingTimeTracking.Models.Inventory;
 using ManufacturingTimeTracking.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QRCoder;
 
@@ -66,32 +67,87 @@ public class ItemsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var item = await _db.Items.FindAsync(id);
-        if (item != null)
+        if (item == null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Check all foreign key references before deleting
+        var usedInComponents = await _db.MachineModelComponents
+            .AnyAsync(c => c.ItemId == id);
+        if (usedInComponents)
+        {
+            var count = await _db.MachineModelComponents.CountAsync(c => c.ItemId == id);
+            TempData["DeleteError"] = $"Cannot delete \"{item.Sku}\" because it is used in {count} machine model component(s). Remove it from all machine models first.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var usedInAlternatives = await _db.MachineModelComponentAlternatives
+            .AnyAsync(a => a.ItemId == id);
+        if (usedInAlternatives)
+        {
+            var count = await _db.MachineModelComponentAlternatives.CountAsync(a => a.ItemId == id);
+            TempData["DeleteError"] = $"Cannot delete \"{item.Sku}\" because it is used in {count} machine model component alternative(s). Remove those alternatives first.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var usedInPickLines = await _db.OrderPickLines
+            .AnyAsync(l => l.ItemId == id);
+        if (usedInPickLines)
+        {
+            var count = await _db.OrderPickLines.CountAsync(l => l.ItemId == id);
+            TempData["DeleteError"] = $"Cannot delete \"{item.Sku}\" because it is referenced in {count} order pick line(s). Complete or cancel those orders first.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var hasRobotTasks = await _db.RobotTasks
+            .AnyAsync(t => t.ItemId == id);
+        if (hasRobotTasks)
+        {
+            var count = await _db.RobotTasks.CountAsync(t => t.ItemId == id);
+            TempData["DeleteError"] = $"Cannot delete \"{item.Sku}\" because it is referenced in {count} robot task(s).";
+            return RedirectToAction(nameof(Index));
+        }
+
+        try
         {
             _db.Items.Remove(item);
             await _db.SaveChangesAsync();
             TempData["Msg"] = "Item deleted.";
         }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) when (ex.InnerException?.Message?.Contains("REFERENCE") == true)
+        {
+            TempData["DeleteError"] = $"Cannot delete \"{item.Sku}\" because it is still referenced elsewhere. Remove those references first.";
+        }
+
         return RedirectToAction(nameof(Index));
     }
 
-    public IActionResult QuickCreate() => View(new Item());
+    public async Task<IActionResult> QuickCreate()
+    {
+        var materials = await _db.Materials.OrderBy(m => m.Name).ToListAsync();
+        ViewBag.Materials = new SelectList(materials, "Id", "Name");
+        return View(new Item());
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> QuickCreate(string sku, string name, string tagCode, string tagType, int packQuantity, bool isSerialized, int? materialId)
+    public async Task<IActionResult> QuickCreate(string sku, string name, string family, string modelOrType, string unit, string tagCode, string tagType, int packQuantity, bool isSerialized, int? materialId)
     {
         if (string.IsNullOrWhiteSpace(sku) || string.IsNullOrWhiteSpace(name))
         {
             ModelState.AddModelError("", "SKU and Name are required.");
-            return View(new Item { Sku = sku ?? "", Name = name ?? "" });
+            var materials = await _db.Materials.OrderBy(m => m.Name).ToListAsync();
+            ViewBag.Materials = new SelectList(materials, "Id", "Name");
+            return View(new Item { Sku = sku ?? "", Name = name ?? "", Family = family ?? "", ModelOrType = modelOrType ?? "", Unit = unit ?? "ud", MaterialId = materialId });
         }
         if (string.IsNullOrWhiteSpace(tagCode))
         {
             tagCode = $"IT-{Guid.NewGuid().ToString()[..8].ToUpper()}";
             tagType = "QR";
         }
-        var item = await _inv.CreateOrGetItemMinimalAsync(sku.Trim(), name.Trim(), "", "ud", materialId);
+        var item = await _inv.CreateOrGetItemMinimalAsync(sku.Trim(), name.Trim(), family?.Trim() ?? "", unit?.Trim() ?? "ud", materialId);
+        item.ModelOrType = modelOrType?.Trim() ?? "";
         item.IsSerialized = isSerialized;
         await _db.SaveChangesAsync();
         await _inv.AttachTagAsync(item.Id, tagCode.Trim(), string.IsNullOrWhiteSpace(tagType) ? "RFID" : tagType.Trim().ToUpperInvariant(), packQuantity <= 0 ? 1 : packQuantity);

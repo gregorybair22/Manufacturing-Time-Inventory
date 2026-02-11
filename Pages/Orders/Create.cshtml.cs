@@ -44,6 +44,40 @@ public class CreateModel : PageModel
         _context.BuildOrders.Add(BuildOrder);
         await _context.SaveChangesAsync();
 
+        // Automatically generate pick list from machine model components (including alternatives)
+        var machineModel = await _context.MachineModels
+            .Include(m => m.Components)
+                .ThenInclude(c => c.Alternatives)
+            .FirstOrDefaultAsync(m => m.Id == BuildOrder.MachineModelId);
+
+        if (machineModel != null && machineModel.Components.Any())
+        {
+            foreach (var component in machineModel.Components)
+            {
+                // Add primary item
+                _context.OrderPickLines.Add(new OrderPickLine
+                {
+                    BuildOrderId = BuildOrder.Id,
+                    ItemId = component.ItemId,
+                    QuantityRequired = component.Quantity,
+                    QuantityPicked = 0
+                });
+                
+                // Add all alternatives
+                foreach (var alt in component.Alternatives)
+                {
+                    _context.OrderPickLines.Add(new OrderPickLine
+                    {
+                        BuildOrderId = BuildOrder.Id,
+                        ItemId = alt.ItemId,
+                        QuantityRequired = component.Quantity,
+                        QuantityPicked = 0
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+
         return RedirectToPage("./Index");
     }
 }

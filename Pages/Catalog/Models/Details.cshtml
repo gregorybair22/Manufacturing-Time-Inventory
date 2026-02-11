@@ -4,7 +4,7 @@
     ViewData["Title"] = "Model Details";
 }
 
-<div class="animate-fade-in max-w-4xl">
+<div class="animate-fade-in w-full">
     <h1 class="text-2xl font-bold text-slate-800 mb-2">Model Details</h1>
     <p class="text-slate-500 mb-6">Machine model, variants, and components.</p>
 
@@ -82,15 +82,40 @@
         {
             <div class="overflow-x-auto rounded-xl border border-slate-100">
                 <table class="min-w-full divide-y divide-slate-200">
-                    <thead class="bg-slate-50/80"><tr><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Item (SKU)</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Name</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Model/Type</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Qty</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Notes</th><th class="px-4 py-3"></th></tr></thead>
+                    <thead class="bg-slate-50/80"><tr><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Item (SKU)</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Name</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Model/Type</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Qty</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Alternatives</th><th class="px-4 py-3 text-left text-xs font-semibold text-slate-500">Notes</th><th class="px-4 py-3"></th></tr></thead>
                     <tbody class="divide-y divide-slate-100">
-                        @foreach (var c in Model.MachineModel.Components)
+                        @foreach (var c in Model.MachineModel.Components.OrderBy(c => c.Item.Sku))
                         {
                             <tr class="table-row-hover">
-                                <td class="px-4 py-3 text-slate-800">@c.Item.Sku</td>
+                                <td class="px-4 py-3 text-slate-800 font-medium">@c.Item.Sku</td>
                                 <td class="px-4 py-3 text-slate-800">@c.Item.Name</td>
                                 <td class="px-4 py-3 text-slate-600">@c.Item.ModelOrType</td>
                                 <td class="px-4 py-3 text-slate-600">@c.Quantity</td>
+                                <td class="px-4 py-3 text-slate-600 text-sm">
+                                    @if (c.Alternatives.Any())
+                                    {
+                                        <div class="space-y-1">
+                                            @foreach (var alt in c.Alternatives.OrderBy(a => a.SortOrder).ThenBy(a => a.Item.Sku))
+                                            {
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-slate-400">OR</span>
+                                                    <span class="font-medium">@alt.Item.Sku</span>
+                                                    <span class="text-slate-500">(@alt.Item.Name)</span>
+                                                    <form method="post" asp-page-handler="DeleteAlternative" class="inline" onsubmit="return confirm('Remove this alternative?');">
+                                                        <input type="hidden" name="alternativeId" value="@alt.Id" />
+                                                        <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
+                                                        <button type="submit" class="text-xs text-red-600 hover:text-red-800" title="Remove alternative">×</button>
+                                                    </form>
+                                                </div>
+                                            }
+                                        </div>
+                                        <button type="button" class="mt-2 text-xs px-2 py-1 rounded border border-blue-600 text-blue-600 hover:bg-blue-50" onclick="showAddAlternative(@c.Id)">+ Add alternative</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="text-xs px-2 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-50" onclick="showAddAlternative(@c.Id)">+ Add alternatives</button>
+                                    }
+                                </td>
                                 <td class="px-4 py-3 text-slate-500">@(c.Notes ?? "—")</td>
                                 <td class="px-4 py-3">
                                     <form method="post" asp-page-handler="DeleteComponent" class="inline">
@@ -129,8 +154,10 @@
     </div>
 
     <div class="flex gap-3">
+    <div class="m-auto">
         <a asp-page="./Edit" asp-route-id="@Model.MachineModel.Id" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md">Edit</a>
         <a asp-page="./Index" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50">Back to List</a>
+    </div>
     </div>
 </div>
 
@@ -160,6 +187,31 @@
     </div>
 </div>
 
+<!-- Add Alternative Modal -->
+<div id="addAlternativeModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAddAlternativeModal()"></div>
+    <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 p-6 animate-scale-in">
+        <h4 class="text-lg font-semibold text-slate-800 mb-4">Add Alternative Item</h4>
+        <p class="text-slate-500 text-sm mb-4">Add an alternative item that can be used instead of the primary item. Pick list will show all alternatives.</p>
+        <form method="post" asp-page-handler="AddAlternative">
+            <input type="hidden" id="addAlternativeComponentId" name="componentId" />
+            <input type="hidden" name="modelId" value="@Model.MachineModel.Id" />
+            <div class="space-y-4">
+                <div>
+                    <label for="addAlternativeItemId" class="block text-sm font-medium text-slate-700 mb-1">Alternative Item <span class="text-red-500">*</span></label>
+                    <select id="addAlternativeItemId" name="itemId" asp-items="Model.ItemSelectList" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" required>
+                        <option value="">-- Select item --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50" onclick="closeAddAlternativeModal()">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700">Add Alternative</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
@@ -172,6 +224,16 @@
         }
         function closeEditVariantModal() {
             document.getElementById('editVariantModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        function showAddAlternative(componentId) {
+            document.getElementById('addAlternativeComponentId').value = componentId;
+            document.getElementById('addAlternativeItemId').value = '';
+            document.getElementById('addAlternativeModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeAddAlternativeModal() {
+            document.getElementById('addAlternativeModal').classList.add('hidden');
             document.body.style.overflow = '';
         }
     </script>
