@@ -20,6 +20,10 @@ public class LogoutModel : PageModel
     {
         await _signInManager.SignOutAsync();
         _logger.LogInformation("User logged out.");
+        
+        // Set toastr notification for logout
+        TempData["ToastrSuccess"] = "You have been successfully logged out.";
+        
         // Always redirect to home page after logout
         return RedirectToPage("/Index");
     }

@@ -35,14 +35,21 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     // Sign in settings
     options.SignIn.RequireConfirmedAccount = false;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization(options =>
 {
     // Inventory menu: only users with Inventory or Admin role
     options.AddPolicy("CanUseInventory", p => p.RequireRole("Inventory", "Admin"));
-    // Time management menu: Operator, Supervisor, Admin
-    options.AddPolicy("CanUseTimeManagement", p => p.RequireRole("Operator", "Supervisor", "Admin"));
+    // Time management menu: Operator, Supervisor, Admin, Normal (Normal has restricted actions)
+    options.AddPolicy("CanUseTimeManagement", p => p.RequireRole("Operator", "Supervisor", "Admin", "Normal"));
+    // Admin-only: manage users and roles
+    options.AddPolicy("CanManageUsers", p => p.RequireRole("Admin"));
+    // Who can add/edit steps, templates, and add instructions/evidence (not Normal/Operator)
+    options.AddPolicy("CanEditSteps", p => p.RequireRole("Admin", "Supervisor"));
+    // Who can see prices (when added to components later)
+    options.AddPolicy("CanSeePrices", p => p.RequireRole("Admin"));
 });
 
 builder.Services.AddRazorPages();

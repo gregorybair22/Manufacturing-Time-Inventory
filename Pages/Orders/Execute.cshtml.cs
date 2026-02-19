@@ -299,6 +299,11 @@ public class ExecuteModel : PageModel
 
     public async Task<IActionResult> OnPostUploadEvidenceAsync(int stepExecId, IFormFile? imageFile, string? note)
     {
+        if (!User.IsInRole("Admin") && !User.IsInRole("Supervisor"))
+        {
+            return Forbid();
+        }
+
         var step = await _context.StepExecs
             .Include(s => s.PhaseExec)
                 .ThenInclude(p => p.BuildExecution)
@@ -398,6 +403,11 @@ public class ExecuteModel : PageModel
 
     public async Task<IActionResult> OnPostAddStepAsync(int phaseExecId, string title, string instructions, bool allowSkip)
     {
+        if (!User.IsInRole("Admin") && !User.IsInRole("Supervisor"))
+        {
+            return Forbid();
+        }
+
         var phase = await _context.PhaseExecs
             .Include(p => p.BuildExecution)
             .FirstOrDefaultAsync(p => p.Id == phaseExecId);

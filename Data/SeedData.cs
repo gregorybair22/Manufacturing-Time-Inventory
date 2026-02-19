@@ -14,8 +14,8 @@ public static class SeedData
         RoleManager<IdentityRole> roleManager)
     {
 
-        // Create roles (Time: Operator, Supervisor, Admin | Inventory: Inventory, Admin)
-        string[] roles = { "Admin", "Supervisor", "Operator", "Inventory" };
+        // Create roles (Time: Operator, Supervisor, Admin | Inventory: Inventory, Admin | Normal: restricted, no step edits/prices)
+        string[] roles = { "Admin", "Supervisor", "Operator", "Inventory", "Normal" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
@@ -29,6 +29,7 @@ public static class SeedData
         await CreateUserAsync(userManager, "supervisor@test.com", "Supervisor123!", "Supervisor");
         await CreateUserAsync(userManager, "operator@test.com", "Operator123!", "Operator");
         await CreateUserAsync(userManager, "inventory@test.com", "Inventory123!", "Inventory");
+        await CreateUserAsync(userManager, "user@test.com", "User123!", "Normal");
 
         // Seed catalog data if not exists
         if (!context.MachineModels.Any())

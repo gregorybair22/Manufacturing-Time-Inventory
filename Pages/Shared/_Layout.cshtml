@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Manufacturing Time Tracking</title>
+    <title>@ViewData["Title"] - Manufacturing Time Tracking and Inventory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -28,62 +28,74 @@
     </script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ManufacturingTimeTracking.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800 antialiased flex flex-col">
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-soft">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a asp-area="" asp-page="/Index" class="text-xl font-bold text-slate-800 hover:text-blue-600 transition-colors duration-200 flex items-center gap-2">
-                        <span class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm font-extrabold">M</span>
-                        Manufacturing Time
+        <nav class="w-full mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
+            <div class="flex justify-between items-center h-16 gap-2">
+                <div class="flex items-center shrink-0 min-w-0">
+                    <a asp-area="" asp-page="/Index" class="text-base sm:text-lg xl:text-xl font-bold text-slate-800 hover:text-blue-600 transition-colors duration-200 flex items-center gap-1.5 sm:gap-2">
+                        <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xs sm:text-sm font-extrabold shrink-0">M</span>
+                        <span class="hidden sm:inline">Manufacturing Time and Inventory</span>
+                        <span class="sm:hidden">M Time</span>
                     </a>
                 </div>
-                <div class="hidden md:flex items-center gap-1">
-                    <a asp-area="" asp-page="/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Home</a>
-                    @if (User.IsInRole("Admin") || User.IsInRole("Operator") || User.IsInRole("Supervisor"))
-                    {
-                        <a asp-area="" asp-page="/Catalog/Models/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Models</a>
-                        <a asp-area="" asp-page="/Templates/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Templates</a>
-                        <div class="relative group">
-                            <button type="button" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium inline-flex items-center gap-1">
-                                Resources <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                            </button>
-                            <div class="absolute left-0 mt-1 w-48 py-2 bg-white rounded-xl shadow-card border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top">
-                                <a asp-page="/Tools/Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Tools</a>
-                                <a asp-page="/Materials/Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Materials</a>
+                <div class="hidden xl:flex items-center gap-0.5 2xl:gap-1 justify-around min-w-0 flex-1">
+                    <div class="flex items-center gap-0.5 xl:gap-1 flex-wrap justify-end min-w-0">
+                        <!-- <a asp-area="" asp-page="/Index" class="px-1.5 xl:px-2 2xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium text-xs xl:text-sm 2xl:text-base whitespace-nowrap shrink-0">Home</a> -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-area="" asp-page="/Admin/Users/Index" class="px-1.5 xl:px-2 2xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium text-xs xl:text-sm 2xl:text-base whitespace-nowrap shrink-0">Users</a>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Operator") || User.IsInRole("Supervisor") || User.IsInRole("Normal"))
+                        {
+                            <a asp-area="" asp-page="/Catalog/Models/Index" class="px-1.5 xl:px-2 2xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium text-xs xl:text-sm 2xl:text-base whitespace-nowrap shrink-0">Models</a>
+                            <a asp-area="" asp-page="/Templates/Index" class="px-1.5 xl:px-2 2xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium text-xs xl:text-sm 2xl:text-base whitespace-nowrap shrink-0">Templates</a>
+                            <div class="relative group shrink-0">
+                                <button type="button" class="px-1.5 xl:px-2 2xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium inline-flex items-center gap-1 text-xs xl:text-sm 2xl:text-base whitespace-nowrap">
+                                    Resources <svg class="w-3 h-3 xl:w-4 xl:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </button>
+                                <div class="absolute right-0 xl:left-0 mt-1 w-48 py-2 bg-white rounded-xl shadow-card border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top z-50">
+                                    <a asp-page="/Tools/Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Tools</a>
+                                    <a asp-page="/Materials/Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Materials</a>
+                                </div>
                             </div>
-                        </div>
-                        <a asp-area="" asp-page="/Orders/Index" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Orders</a>
-                    }
-                    @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
-                    {
-                        <div class="relative group">
-                            <button type="button" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium inline-flex items-center gap-1">
-                                Inventory <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                            </button>
-                            <div class="absolute left-0 mt-1 w-52 py-2 bg-white rounded-xl shadow-card border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top">
-                                <a asp-controller="Items" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Items</a>
-                                <a asp-controller="Locations" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Locations</a>
-                                <a asp-controller="Inventory" asp-action="Stock" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Stock</a>
-                                <a asp-controller="Inventory" asp-action="Movements" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Movements</a>
-                                <div class="border-t border-slate-100 my-2"></div>
-                                <a asp-controller="Inventory" asp-action="Reports" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Reports</a>
-                                <a asp-controller="Operations" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Operations</a>
+                            <a asp-area="" asp-page="/Orders/Index" class="px-1.5 xl:px-2 2xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium text-xs xl:text-sm 2xl:text-base whitespace-nowrap shrink-0">Orders</a>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
+                        {
+                            <div class="relative group shrink-0">
+                                <button type="button" class="px-1.5 xl:px-2 2xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium inline-flex items-center gap-1 text-xs xl:text-sm 2xl:text-base whitespace-nowrap">
+                                    Inventory <svg class="w-3 h-3 xl:w-4 xl:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </button>
+                                <div class="absolute right-0 xl:left-0 mt-1 w-52 py-2 bg-white rounded-xl shadow-card border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top z-50">
+                                    <a asp-controller="Items" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Items</a>
+                                    <a asp-controller="Locations" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Locations</a>
+                                    <a asp-controller="Inventory" asp-action="Stock" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Stock</a>
+                                    <a asp-controller="Inventory" asp-action="Movements" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Movements</a>
+                                    <div class="border-t border-slate-100 my-2"></div>
+                                    <a asp-controller="Inventory" asp-action="Reports" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Reports</a>
+                                    <a asp-controller="Operations" asp-action="Index" class="block px-4 py-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg mx-2 transition-colors">Operations</a>
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                     <partial name="_LoginPartial" />
                 </div>
-                <div class="flex items-center md:hidden">
+                <div class="flex items-center xl:hidden shrink-0">
                     <button type="button" id="mobile-menu-btn" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100" aria-label="Menu">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                     </button>
                 </div>
             </div>
-            <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-slate-100 pt-4 animate-fade-in">
+            <div id="mobile-menu" class="hidden xl:hidden pb-4 border-t border-slate-100 pt-4 animate-fade-in">
                 <a asp-page="/Index" class="block py-2 text-slate-600">Home</a>
-                @if (User.IsInRole("Admin") || User.IsInRole("Operator") || User.IsInRole("Supervisor"))
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-page="/Admin/Users/Index" class="block py-2 text-slate-600">Manage Users</a>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("Operator") || User.IsInRole("Supervisor") || User.IsInRole("Normal"))
                 {
                     <a asp-page="/Catalog/Models/Index" class="block py-2 text-slate-600">Models</a>
                     <a asp-page="/Templates/Index" class="block py-2 text-slate-600">Templates</a>
@@ -105,24 +117,70 @@
         </nav>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-x-hidden">
         @RenderBody()
     </main>
 
     <footer class="border-t border-slate-200 bg-white mt-auto py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-sm">
-            &copy; 2026 Manufacturing Time Tracking — <a asp-area="" asp-page="/Privacy" class="text-blue-600 hover:text-blue-700 hover:underline transition-colors">Privacy</a>
+            &copy; 2026 Manufacturing Time Tracking And Inventory — <a asp-area="" asp-page="/Privacy" class="text-blue-600 hover:text-blue-700 hover:underline transition-colors">Privacy</a>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
       document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
         var menu = document.getElementById('mobile-menu');
         if (menu) menu.classList.toggle('hidden');
       });
+
+      // Configure toastr defaults
+      toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      };
+
+      // Show toastr notifications from TempData
+      @if (TempData["ToastrSuccess"] != null)
+      {
+        <text>
+        toastr.success(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastrSuccess"])));
+        </text>
+      }
+      @if (TempData["ToastrError"] != null)
+      {
+        <text>
+        toastr.error(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastrError"])));
+        </text>
+      }
+      @if (TempData["ToastrInfo"] != null)
+      {
+        <text>
+        toastr.info(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastrInfo"])));
+        </text>
+      }
+      @if (TempData["ToastrWarning"] != null)
+      {
+        <text>
+        toastr.warning(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastrWarning"])));
+        </text>
+      }
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

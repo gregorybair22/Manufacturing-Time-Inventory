@@ -1,17 +1,17 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ManufacturingTimeTracking.Models.ApplicationUser> SignInManager
 
-<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+<div class="flex items-center gap-2 shrink-0 ml-2">
 @if (SignInManager.IsSignedIn(User))
 {
-    <span class="text-slate-600 text-sm font-medium">Hello, @User.Identity?.Name!</span>
-    <form asp-page="/Account/Logout" method="post" class="inline">
-        <button type="submit" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium">Logout</button>
+    <span class="text-slate-600 text-xs xl:text-sm font-medium whitespace-nowrap truncate max-w-[120px] xl:max-w-none" title="@User.Identity?.Name">Hello, @(User.Identity?.Name?.Length > 15 ? User.Identity.Name.Substring(0, 15) + "..." : User.Identity?.Name)!</span>
+    <form asp-page="/Account/Logout" method="post" class="inline shrink-0">
+        <button type="submit" class="px-2 xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 font-medium text-xs xl:text-sm whitespace-nowrap">Logout</button>
     </form>
 }
 else
 {
-    <a asp-page="/Account/Register" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-all duration-200 font-medium">Register</a>
-    <a asp-page="/Account/Login" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-200 font-medium">Login</a>
+    <a asp-page="/Account/Register" class="px-2 xl:px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-all duration-200 font-medium text-xs xl:text-sm whitespace-nowrap">Register</a>
+    <a asp-page="/Account/Login" class="px-2 xl:px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-200 font-medium text-xs xl:text-sm whitespace-nowrap">Login</a>
 }
 </div>

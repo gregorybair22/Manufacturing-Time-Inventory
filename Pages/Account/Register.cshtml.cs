@@ -11,15 +11,18 @@ public class RegisterModel : PageModel
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ILogger<RegisterModel> _logger;
 
     public RegisterModel(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
         ILogger<RegisterModel> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
         _logger = logger;
     }
 
@@ -62,11 +65,18 @@ public class RegisterModel : PageModel
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)
             {
-                _logger.LogInformation("User created a new account with password.");
+                // Ensure every user has a role: assign Normal by default
+                if (!await _roleManager.RoleExistsAsync("Normal"))
+                    await _roleManager.CreateAsync(new IdentityRole("Normal"));
+                await _userManager.AddToRoleAsync(user, "Normal");
+                _logger.LogInformation("User created a new account with password (role: Normal).");
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
+                TempData["ToastrSuccess"] = $"Welcome, {Input.Email}! Your account has been created and you are now logged in.";
                 return LocalRedirect(returnUrl);
             }
+            var errorMessages = string.Join(" ", result.Errors.Select(e => e.Description));
+            TempData["ToastrError"] = $"Registration failed: {errorMessages}";
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Linq;
 
 namespace ManufacturingTimeTracking.Pages.Templates;
 
+[Authorize(Policy = "CanEditSteps")]
 public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;

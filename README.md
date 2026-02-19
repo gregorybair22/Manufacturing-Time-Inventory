@@ -5,18 +5,31 @@ A single web application that combines **time tracking** (manufacturing/assembly
 ## Single database, role-based access
 
 - **One database** (`ManufacturingTimeTracking`) for both time tracking and inventory.
-- **Time management menu** (Models, Templates, Resources, Orders): visible to roles **Admin**, **Supervisor**, **Operator**.
+- **Time management menu** (Models, Templates, Resources, Orders): visible to **Admin**, **Supervisor**, **Operator**, and **Normal** (Normal has view/execute only; cannot edit templates or add steps/instructions).
 - **Inventory menu** (Items, Locations, Stock, Movements, Operations): visible to **Admin** and **Inventory**.
+- **Manage Users** (admin only): **Admin** can change any user’s role and reset password. Every user must have a role.
 - **Shared items:** Inventory items can be linked to process Materials (same product in warehouse and production). Use **Putaway** and **Pick** to move items from warehouse to production stations (create locations with type "Workstation").
+- **Prices:** When prices are added to components later, they will be hidden from non-Admin users (policy `CanSeePrices`).
+
+**Role permissions (summary):**
+
+| Role        | Time (view/execute) | Edit templates / Add steps or instructions | Manage users | See prices (future) |
+|------------|---------------------|--------------------------------------------|--------------|----------------------|
+| Admin      | ✓                   | ✓                                          | ✓            | ✓                    |
+| Supervisor | ✓                   | ✓                                          | —            | —                    |
+| Operator   | ✓                   | —                                          | —            | —                    |
+| Normal     | ✓                   | —                                          | —            | —                    |
+| Inventory  | —                   | —                                          | —            | —                    |
 
 **Test accounts:**
 
 | Role       | Email               | Password      | Access              |
 |-----------|---------------------|---------------|---------------------|
-| Admin     | admin@test.com      | Admin123!     | Time + Inventory    |
-| Supervisor| supervisor@test.com | Supervisor123!| Time only           |
+| Admin     | admin@test.com      | Admin123!     | Time + Inventory + Manage Users |
+| Supervisor| supervisor@test.com | Supervisor123!| Time (can edit templates/steps) |
 | Operator  | operator@test.com   | Operator123!  | Time only           |
 | Inventory | inventory@test.com   | Inventory123! | Inventory only      |
+| Normal    | user@test.com       | User123!      | Time (view/execute only)       |
 
 ## 🚀 Quick Start Guide
 

@@ -61,9 +61,12 @@
         <div class="bg-white rounded-2xl shadow-soft border border-slate-100 p-6 mb-6">
             <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                 <h2 class="text-lg font-semibold text-slate-800">@phase.Name</h2>
-                <button type="button" class="px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50" data-bs-toggle="modal" data-bs-target="#addStepModal@(phase.Id)">
-                    + Add Step
-                </button>
+                @if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
+                {
+                    <button type="button" class="px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50" data-bs-toggle="modal" data-bs-target="#addStepModal@(phase.Id)">
+                        + Add Step
+                    </button>
+                }
             </div>
             <div>
                 @foreach (var step in phase.Steps.OrderBy(s => s.SortOrder))
@@ -245,7 +248,10 @@
                                     {
                                         <button type="button" class="px-3 py-1.5 rounded-lg bg-slate-600 text-white text-sm font-medium hover:bg-slate-700" data-bs-toggle="modal" data-bs-target="#startModal@(step.Id)">Rework</button>
                                     }
-                                    <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50" data-bs-toggle="modal" data-bs-target="#instructionModal@(step.Id)">📚 Add Instruction</button>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
+                                    {
+                                        <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 text-sm font-medium hover:bg-slate-50" data-bs-toggle="modal" data-bs-target="#instructionModal@(step.Id)">📚 Add Instruction</button>
+                                    }
 
                                     <!-- Start/Rework Modal -->
                                     <div class="modal fade" id="startModal@(step.Id)" tabindex="-1">

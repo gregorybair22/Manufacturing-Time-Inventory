@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using ManufacturingTimeTracking.Models.Catalog;
 
 namespace ManufacturingTimeTracking.Pages.Templates;
 
+[Authorize(Policy = "CanEditSteps")]
 public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;

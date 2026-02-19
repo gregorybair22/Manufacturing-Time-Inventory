@@ -52,10 +52,12 @@ public class LoginModel : PageModel
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
+                TempData["ToastrSuccess"] = $"Welcome back, {Input.Email}! You have successfully logged in.";
                 return LocalRedirect(returnUrl);
             }
             else
             {
+                TempData["ToastrError"] = "Invalid login attempt. Please check your email and password.";
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 return Page();
             }

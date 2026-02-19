@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using ManufacturingTimeTracking.Models.Catalog;
 
 namespace ManufacturingTimeTracking.Pages.Templates;
 
+[Authorize(Policy = "CanEditSteps")]
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
