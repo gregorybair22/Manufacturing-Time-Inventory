@@ -10,23 +10,23 @@
     </div>
     <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 table-fixed w-full">
                 <thead class="bg-slate-50/80">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Model / Type</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Total units</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Item count</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Items</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Model / Type</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Total units</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Item count</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Items</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach (var r in Model)
                     {
                         <tr class="table-row-hover">
-                            <td class="px-6 py-4 font-medium text-slate-800">@r.ModelOrType</td>
-                            <td class="px-6 py-4 text-slate-600">@r.TotalQuantity</td>
-                            <td class="px-6 py-4 text-slate-600">@r.ItemCount</td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center font-medium text-slate-800">@r.ModelOrType</td>
+                            <td class="px-6 py-4 text-center text-slate-600">@r.TotalQuantity</td>
+                            <td class="px-6 py-4 text-center text-slate-600">@r.ItemCount</td>
+                            <td class="px-6 py-4 text-center">
                                 <ul class="space-y-0.5 text-sm text-slate-600">
                                     @foreach (var line in r.Lines.OrderByDescending(x => x.TotalQty).Take(30))
                                     {

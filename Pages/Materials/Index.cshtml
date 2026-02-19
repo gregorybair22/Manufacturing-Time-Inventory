@@ -15,20 +15,20 @@
     }
     <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 table-fixed w-full">
                 <thead class="bg-slate-50/80">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Image</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Unit</th>
-                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-4 text-center w-3/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Image</th>
+                        <th class="px-6 py-4 text-center w-6/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-center w-1/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Unit</th>
+                        <th class="px-6 py-4 text-center w-2/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach (var material in Model.Materials)
                     {
                         <tr class="table-row-hover transition-colors duration-150">
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center w-3/12">
                                 @if (!string.IsNullOrEmpty(material.ImageUrl))
                                 {
                                     <img src="~/uploads/@material.ImageUrl" alt="@material.Name" class="rounded-lg object-cover h-12 w-12" />
@@ -38,9 +38,9 @@
                                     <span class="text-slate-400">—</span>
                                 }
                             </td>
-                            <td class="px-6 py-4 font-medium text-slate-800">@material.Name</td>
-                            <td class="px-6 py-4 text-slate-600">@(material.Unit ?? "—")</td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-6 py-4 text-center w-6/12 font-medium text-slate-800">@material.Name</td>
+                            <td class="px-6 py-4 text-center w-1/12 text-slate-600">@(material.Unit ?? "—")</td>
+                            <td class="px-6 py-4 text-center w-2/12 text-right">
                                 <a asp-page="./Edit" asp-route-id="@material.Id" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 mr-2">Edit</a>
                                 <a asp-page="./Delete" asp-route-id="@material.Id" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-red-600 text-red-600 text-sm font-medium hover:bg-red-50">Delete</a>
                             </td>

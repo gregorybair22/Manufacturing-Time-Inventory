@@ -18,13 +18,12 @@ public class SummaryModel : PageModel
 
     public BuildOrder BuildOrder { get; set; } = default!;
     public BuildExecution? LatestExecution { get; set; }
+    public string MachineModelName { get; set; } = "";
+    public string MachineVariantName { get; set; } = "";
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
 
         var order = await _context.BuildOrders
             .Include(o => o.Executions)
@@ -46,6 +45,11 @@ public class SummaryModel : PageModel
 
         BuildOrder = order;
         LatestExecution = order.Executions.OrderByDescending(e => e.StartedAt).FirstOrDefault();
+
+        var model = await _context.MachineModels.FindAsync(order.MachineModelId);
+        var variant = await _context.MachineVariants.FindAsync(order.MachineVariantId);
+        MachineModelName = model?.Name ?? $"Model {order.MachineModelId}";
+        MachineVariantName = variant?.Name ?? $"Variant {order.MachineVariantId}";
 
         return Page();
     }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ManufacturingTimeTracking.Data;
 using ManufacturingTimeTracking.Models.Execution;
 using ManufacturingTimeTracking.Models.Templates;
+using ManufacturingTimeTracking.Models.Catalog;
 using MediaModel = ManufacturingTimeTracking.Models.Templates.Media;
 using System.Security.Claims;
 
@@ -22,21 +23,20 @@ public class ExecuteModel : PageModel
 
     public BuildOrder BuildOrder { get; set; } = default!;
     public BuildExecution? CurrentExecution { get; set; }
+    public string MachineModelName { get; set; } = "";
+    public string MachineVariantName { get; set; } = "";
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
 
-        var order = await _context.BuildOrders
-            .FirstOrDefaultAsync(o => o.Id == id);
+        var order = await _context.BuildOrders.FirstOrDefaultAsync(o => o.Id == id);
+        if (order == null) return NotFound();
 
-        if (order == null)
-        {
-            return NotFound();
-        }
+        var model = await _context.MachineModels.FindAsync(order.MachineModelId);
+        var variant = await _context.MachineVariants.FindAsync(order.MachineVariantId);
+        MachineModelName = model?.Name ?? $"Model {order.MachineModelId}";
+        MachineVariantName = variant?.Name ?? $"Variant {order.MachineVariantId}";
 
         var execution = await _context.BuildExecutions
             .Include(e => e.Phases)
@@ -179,14 +179,15 @@ public class ExecuteModel : PageModel
             return NotFound();
         }
 
-        // Check if there's already a running step
         var runningStep = await _context.StepRuns
             .FirstOrDefaultAsync(sr => sr.StepExecId == stepExecId && sr.FinishedAt == null);
 
         if (runningStep != null)
-        {
             return RedirectToPage("./Execute", new { id = step.PhaseExec.BuildExecution.BuildOrderId });
-        }
+
+        // Allow start when Pending or Done (rework)
+        if (step.State != "Pending" && step.State != "Done")
+            return RedirectToPage("./Execute", new { id = step.PhaseExec.BuildExecution.BuildOrderId });
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -201,7 +202,6 @@ public class ExecuteModel : PageModel
         step.State = "InProgress";
         await _context.SaveChangesAsync();
 
-        // Redirect to full-screen step view
         return RedirectToPage("./StepView", new { stepExecId = stepExecId });
     }
 
@@ -228,6 +228,21 @@ public class ExecuteModel : PageModel
         }
 
         step.State = "Done";
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage("./Execute", new { id = step.PhaseExec.BuildExecution.BuildOrderId });
+    }
+
+    public async Task<IActionResult> OnPostReopenStepAsync(int stepExecId)
+    {
+        var step = await _context.StepExecs
+            .Include(s => s.PhaseExec)
+                .ThenInclude(p => p.BuildExecution)
+            .FirstOrDefaultAsync(s => s.Id == stepExecId);
+
+        if (step == null) return NotFound();
+
+        step.State = "Pending";
         await _context.SaveChangesAsync();
 
         return RedirectToPage("./Execute", new { id = step.PhaseExec.BuildExecution.BuildOrderId });
@@ -265,19 +280,17 @@ public class ExecuteModel : PageModel
                 .ThenInclude(p => p.BuildExecution)
             .FirstOrDefaultAsync(s => s.Id == stepExecId);
 
-        if (step == null)
-        {
-            return NotFound();
-        }
+        if (step == null) return NotFound();
 
-        // Check if there's already a running step
+        // Allow start when Pending or Done (rework)
+        if (step.State != "Pending" && step.State != "Done")
+            return RedirectToPage("./Execute", new { id = step.PhaseExec.BuildExecution.BuildOrderId });
+
         var runningStep = await _context.StepRuns
             .FirstOrDefaultAsync(sr => sr.StepExecId == stepExecId && sr.FinishedAt == null);
 
         if (runningStep != null)
-        {
             return RedirectToPage("./Execute", new { id = step.PhaseExec.BuildExecution.BuildOrderId });
-        }
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

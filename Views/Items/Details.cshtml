@@ -35,23 +35,23 @@
     <h2 class="text-lg font-semibold text-slate-800 mb-3">Associated tags</h2>
     <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 table-fixed w-full">
                 <thead class="bg-slate-50/80">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Pack</th>
-                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-4 text-center w-2/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-4 text-center w-5/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
+                        <th class="px-6 py-4 text-center w-2/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Pack</th>
+                        <th class="px-6 py-4 text-center w-3/12 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach (var t in Model.Tags)
                     {
                         <tr class="table-row-hover">
-                            <td class="px-6 py-4 text-slate-800">@t.TagType</td>
-                            <td class="px-6 py-4"><code class="px-2 py-1 rounded bg-slate-100 text-slate-700 text-sm">@t.Code</code></td>
-                            <td class="px-6 py-4 text-slate-600">@t.PackQuantity</td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-6 py-4 text-center w-2/12 text-slate-800">@t.TagType</td>
+                            <td class="px-6 py-4 text-center w-5/12"><code class="px-2 py-1 rounded bg-slate-100 text-slate-700 text-sm">@t.Code</code></td>
+                            <td class="px-6 py-4 text-center w-2/12 text-slate-600">@t.PackQuantity</td>
+                            <td class="px-6 py-4 text-center w-3/12">
                                 <button type="button" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-emerald-600 text-emerald-600 text-sm font-medium hover:bg-emerald-50 mr-2" data-bs-toggle="modal" data-bs-target="#printLabelModal" data-print-label-url="@Url.Action("PrintLabel", "Items", new { itemId = Model.Id, tagId = t.Id })">Print label</button>
                                 @if (t.TagType == "QR")
                                 {
@@ -67,8 +67,8 @@
 </div>
 
 <!-- Print label modal: iframe loads the print label page -->
-<div class="modal fade" id="printLabelModal" tabindex="-1" aria-labelledby="printLabelModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal" id="printLabelModal" tabindex="-1" aria-labelledby="printLabelModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="printLabelModalTitle">Print label</h5>
@@ -82,7 +82,7 @@
 </div>
 
 <!-- View QR modal: shows QR image -->
-<div class="modal fade" id="viewQrModal" tabindex="-1" aria-labelledby="viewQrModalTitle" aria-hidden="true">
+<div class="modal" id="viewQrModal" tabindex="-1" aria-labelledby="viewQrModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

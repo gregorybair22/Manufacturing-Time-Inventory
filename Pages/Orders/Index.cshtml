@@ -15,31 +15,31 @@
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50/80">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">External Ref</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Serial Number</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Model</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Variant</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Created</th>
-                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">External Ref</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Serial Number</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Model</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Variant</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Created</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach (var order in Model.BuildOrders)
                     {
                         <tr class="table-row-hover transition-colors duration-150">
-                            <td class="px-6 py-4 font-medium text-slate-800">@order.ExternalRef</td>
-                            <td class="px-6 py-4 text-slate-600">@order.SerialNumber</td>
-                            <td class="px-6 py-4 text-slate-600">Model @order.MachineModelId</td>
-                            <td class="px-6 py-4 text-slate-600">Variant @order.MachineVariantId</td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center font-medium text-slate-800">@order.ExternalRef</td>
+                            <td class="px-6 py-4 text-center text-slate-600">@order.SerialNumber</td>
+                            <td class="px-6 py-4 text-center text-slate-600">@(Model.ModelNames.TryGetValue(order.MachineModelId, out var mn) ? mn : $"Model {order.MachineModelId}")</td>
+                            <td class="px-6 py-4 text-center text-slate-600">@(Model.VariantNames.TryGetValue(order.MachineVariantId, out var vn) ? vn : $"Variant {order.MachineVariantId}")</td>
+                            <td class="px-6 py-4 text-center">
                                 @{
                                     var statusClass = order.Status == "InProgress" ? "bg-amber-100 text-amber-800" : order.Status == "Completed" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700";
                                 }
                                 <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium @statusClass">@order.Status</span>
                             </td>
-                            <td class="px-6 py-4 text-slate-600 text-sm">@order.CreatedAt.ToString("g")</td>
-                            <td class="px-6 py-4 text-right flex flex-wrap gap-2 justify-end">
+                            <td class="px-6 py-4 text-center text-slate-600 text-sm">@order.CreatedAt.ToString("g")</td>
+                            <td class="px-6 py-4 text-center flex flex-wrap gap-2 justify-end">
                                 @if (order.Status == "Pending" || order.Status == "InProgress")
                                 {
                                     <a asp-page="./Execute" asp-route-id="@order.Id" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all duration-200">Execute</a>

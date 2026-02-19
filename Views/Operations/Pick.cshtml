@@ -3,7 +3,7 @@
     ViewData["Title"] = "Pick";
     var msg = TempData["Msg"] as string;
 }
-<div class="animate-fade-in max-w-4xl">
+<div class="animate-fade-in max-w-4xl mx-auto">
     <h1 class="text-2xl font-bold text-slate-800 mb-6">Pick</h1>
 
     @if (!string.IsNullOrWhiteSpace(msg))
@@ -56,7 +56,7 @@
                     }
                 </div>
             }
-            <div class="flex gap-3 pt-2">
+            <div class="flex gap-3 pt-2 justify-center">
                 <button type="submit" class="px-6 py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-200 text-lg">Pick</button>
                 <a class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all duration-200" asp-action="Index">Back</a>
             </div>

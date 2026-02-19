@@ -18,6 +18,8 @@
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><dt class="text-sm font-medium text-slate-500">External Ref</dt><dd class="font-medium text-slate-800">@Model.BuildOrder.ExternalRef</dd></div>
             <div><dt class="text-sm font-medium text-slate-500">Serial Number</dt><dd class="font-medium text-slate-800">@Model.BuildOrder.SerialNumber</dd></div>
+            <div><dt class="text-sm font-medium text-slate-500">Model</dt><dd class="font-medium text-slate-800">@Model.MachineModelName</dd></div>
+            <div><dt class="text-sm font-medium text-slate-500">Variant</dt><dd class="font-medium text-slate-800">@Model.MachineVariantName</dd></div>
             <div><dt class="text-sm font-medium text-slate-500">Status</dt><dd><span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium @(Model.BuildOrder.Status == "Completed" ? "bg-emerald-100 text-emerald-800" : Model.BuildOrder.Status == "InProgress" ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-700")">@Model.BuildOrder.Status</span></dd></div>
             <div><dt class="text-sm font-medium text-slate-500">Created</dt><dd class="font-medium text-slate-800">@Model.BuildOrder.CreatedAt.ToString("g")</dd></div>
         </dl>

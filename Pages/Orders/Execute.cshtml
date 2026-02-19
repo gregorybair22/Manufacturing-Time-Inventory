@@ -19,6 +19,8 @@
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><dt class="text-sm font-medium text-slate-500">External Ref</dt><dd class="font-medium text-slate-800">@Model.BuildOrder.ExternalRef</dd></div>
             <div><dt class="text-sm font-medium text-slate-500">Serial Number</dt><dd class="font-medium text-slate-800">@Model.BuildOrder.SerialNumber</dd></div>
+            <div><dt class="text-sm font-medium text-slate-500">Model</dt><dd class="font-medium text-slate-800">@Model.MachineModelName</dd></div>
+            <div><dt class="text-sm font-medium text-slate-500">Variant</dt><dd class="font-medium text-slate-800">@Model.MachineVariantName</dd></div>
             <div><dt class="text-sm font-medium text-slate-500">Status</dt><dd class="font-medium text-slate-800">@Model.BuildOrder.Status</dd></div>
         </dl>
     </div>
@@ -101,7 +103,12 @@
                                         }
                                     </div>
                                 </div>
-                                <p class="text-slate-500 text-sm leading-relaxed mb-3">@step.Instructions</p>
+                                <p class="text-slate-500 text-sm leading-relaxed mb-3 break-words line-clamp-3"
+                                title="@step.Instructions">
+                                    @(step.Instructions.Length > 200 
+                                        ? step.Instructions.Substring(0, 200) + "…" 
+                                        : step.Instructions)
+                                </p>
                                 <div class="text-sm pt-2 border-t border-sky-100/80">
                                     <span class="font-semibold text-slate-700">Total Time:</span>
                                     @if (runningStep != null)
@@ -189,6 +196,7 @@
                                                     }
                                                     
                                                     <!-- Instruction View Modal -->
+
                                                     <div class="modal fade" id="instructionViewModal@(evidence.Id)" tabindex="-1">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
@@ -226,7 +234,7 @@
                                     }
 
                                 </div>
-                                <div class="flex flex-wrap gap-2 items-start justify-end mt-3 md:mt-0 md:min-w-[200px]">
+                                <div class="flex flex-wrap gap-2 items-start justify-end mt-3 md:mt-0 md:min-w-[200px] pt-3 pr-3">
                                     @if (step.State == "Pending")
                                     {
                                         <a href="/Orders/StepView?stepExecId=@step.Id" target="_blank" class="px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50">Preview</a>
@@ -241,12 +249,8 @@
                                         <a href="/Orders/StepView?stepExecId=@step.Id" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">View Full Screen</a>
                                         <form method="post" asp-page-handler="StopStep" class="inline">
                                             <input type="hidden" name="stepExecId" value="@step.Id" />
-                                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700">Stop</button>
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700">Complete</button>
                                         </form>
-                                    }
-                                    else if (step.State == "Done")
-                                    {
-                                        <button type="button" class="px-3 py-1.5 rounded-lg bg-slate-600 text-white text-sm font-medium hover:bg-slate-700" data-bs-toggle="modal" data-bs-target="#startModal@(step.Id)">Rework</button>
                                     }
                                     @if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
                                     {

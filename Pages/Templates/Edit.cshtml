@@ -32,25 +32,25 @@
                     @if (phase.Steps.Any())
                     {
                         <div class="overflow-x-auto mb-6">
-                            <table class="min-w-full divide-y divide-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200 table-fixed w-full">
                                 <thead class="bg-slate-50/80">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase w-16">Order</th>
-                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Title</th>
-                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Instructions</th>
-                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Allow Skip</th>
-                                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase">Actions</th>
+                                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase w-1/12">Order</th>
+                                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase w-3/12">Title</th>
+                                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase w-3/12">Instructions</th>
+                                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase w-1/12">Allow Skip</th>
+                                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase w-4/12">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100">
                                     @foreach (var step in phase.Steps.OrderBy(s => s.SortOrder))
                                     {
                                         <tr class="table-row-hover transition-colors">
-                                            <td class="px-4 py-3 text-slate-600">@step.SortOrder</td>
-                                            <td class="px-4 py-3 font-medium text-slate-800">@step.Title</td>
-                                            <td class="px-4 py-3 text-slate-600 text-sm">@(step.Instructions.Length > 50 ? step.Instructions.Substring(0, 50) + "..." : step.Instructions)</td>
-                                            <td class="px-4 py-3 text-slate-600">@(step.AllowSkip ? "Yes" : "No")</td>
-                                            <td class="px-4 py-3 text-right">
+                                            <td class="px-4 py-3 w-1/12 text-center text-slate-600">@step.SortOrder</td>
+                                            <td class="px-4 py-3 w-3/12 text-center font-medium text-slate-800">@step.Title</td>
+                                            <td class="px-4 py-3 w-3/12 text-center text-slate-600 text-sm">@(step.Instructions.Length > 50 ? step.Instructions.Substring(0, 50) + "..." : step.Instructions)</td>
+                                            <td class="px-4 py-3 w-1/12 text-center text-slate-600">@(step.AllowSkip ? "Yes" : "No")</td>
+                                            <td class="px-4 py-3 w-4/12 text-center text-right">
                                                 <button type="button" onclick="previewStep(@step.Id)" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 mr-2">Preview</button>
                                                 <a asp-page="./EditStep" asp-route-id="@step.Id" class="inline-flex items-center px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 text-sm font-medium hover:bg-blue-50 mr-2">Edit</a>
                                                 <form method="post" asp-page-handler="MoveStep" class="inline mr-2">

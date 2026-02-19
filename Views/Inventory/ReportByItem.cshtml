@@ -10,25 +10,25 @@
     </div>
     <div class="bg-white rounded-2xl shadow-soft border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 table-fixed w-full">
                 <thead class="bg-slate-50/80">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Model/Type</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Locations</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">SKU</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Model/Type</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Locations</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach (var r in Model)
                     {
                         <tr class="table-row-hover">
-                            <td class="px-6 py-4 font-medium text-slate-800">@r.Sku</td>
-                            <td class="px-6 py-4 text-slate-800">@r.Name</td>
-                            <td class="px-6 py-4 text-slate-600">@(string.IsNullOrWhiteSpace(r.ModelOrType) ? "—" : r.ModelOrType)</td>
-                            <td class="px-6 py-4 text-slate-600">@r.TotalQuantity</td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center font-medium text-slate-800">@r.Sku</td>
+                            <td class="px-6 py-4 text-center text-slate-800">@r.Name</td>
+                            <td class="px-6 py-4 text-center text-slate-600">@(string.IsNullOrWhiteSpace(r.ModelOrType) ? "—" : r.ModelOrType)</td>
+                            <td class="px-6 py-4 text-center text-slate-600">@r.TotalQuantity</td>
+                            <td class="px-6 py-4 text-center">
                                 <ul class="space-y-0.5 text-sm text-slate-600">
                                     @foreach (var loc in r.Locations.OrderByDescending(x => x.Quantity))
                                     {
